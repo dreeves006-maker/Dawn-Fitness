@@ -1,326 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Fit Tracker</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #0f172a;
-      color: white;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6 Week Fit Tracker</title>
 
-    header {
-      background: #22c55e;
-      padding: 16px;
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+<style>
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #0f172a;
+  color: white;
+}
 
-    .top-links {
-      margin-top: 10px;
-      font-size: 14px;
-    }
+header {
+  background: #22c55e;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+}
 
-    .top-links a {
-      color: white;
-      text-decoration: none;
-      background: rgba(255,255,255,0.18);
-      padding: 8px 14px;
-      border-radius: 8px;
-      display: inline-block;
-      margin-top: 8px;
-    }
+.container {
+  padding: 15px;
+}
 
-    .container {
-      padding: 16px;
-      max-width: 1000px;
-      margin: auto;
-    }
+select, input {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+}
 
-    .day {
-      margin-bottom: 28px;
-      padding: 16px;
-      background: #1e293b;
-      border-radius: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    }
+.day {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
 
-    .day h2 {
-      margin-top: 0;
-      margin-bottom: 14px;
-      font-size: 24px;
-    }
+.superset {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
 
-    .superset {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
+.exercise-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 6px;
+}
 
-    .superset h3 {
-      margin: 0 0 12px 0;
-      color: #22c55e;
-      font-size: 18px;
-    }
+.save-btn {
+  background: #22c55e;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  margin-top: 10px;
+  font-weight: bold;
+}
 
-    .exercise-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+.timer-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #22c55e;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
 
-    select, input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 15px;
-      box-sizing: border-box;
-    }
+.timer-buttons button {
+  margin-left: 5px;
+}
 
-    .save-btn {
-      background: #22c55e;
-      color: white;
-      border: none;
-      padding: 12px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      width: 100%;
-      margin-top: 8px;
-    }
+.progression {
+  font-size: 12px;
+  color: #86efac;
+}
 
-    .saved-message {
-      margin-top: 10px;
-      color: #86efac;
-      font-size: 14px;
-      display: none;
-    }
-
-    .tip-box {
-      background: #1d4ed8;
-      color: white;
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 18px;
-      line-height: 1.4;
-    }
-
-    @media (max-width: 700px) {
-      .exercise-row {
-        grid-template-columns: 1fr;
-      }
-
-      header {
-        font-size: 22px;
-      }
-
-      .day h2 {
-        font-size: 20px;
-      }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <header>
-    💪 My Fit Tracker
-    <div class="top-links">
-      <a href="https://dreeves006-maker.github.io/Dawn-Fitness/?v=99" target="_blank">Open My Live App</a>
-    </div>
-  </header>
 
-  <div class="container">
-    <div class="tip-box">
-      Choose your exercises for each superset, enter weight and reps, then press Save Day.
-    </div>
+<header>
+💪 6 Week Programme
+<br>
+<select id="weekSelect" onchange="renderApp()">
+  <option value="1">Week 1</option>
+  <option value="2">Week 2</option>
+  <option value="3">Week 3</option>
+  <option value="4">Week 4</option>
+  <option value="5">Week 5</option>
+  <option value="6">Week 6</option>
+</select>
+</header>
 
-    <div id="app"></div>
+<div class="container" id="app"></div>
+
+<div class="timer-bar">
+  <div id="timer">60s</div>
+  <div class="timer-buttons">
+    <button onclick="startTimer(60)">60</button>
+    <button onclick="startTimer(90)">90</button>
+    <button onclick="startTimer(120)">120</button>
+    <button onclick="resetTimer()">Reset</button>
   </div>
+</div>
 
-  <script>
-    const exerciseOptions = [
-      "Goblet Squat",
-      "DB Romanian Deadlift",
-      "DB Deadlift",
-      "Reverse Lunge",
-      "Walking Lunge",
-      "Step Ups",
-      "Glute Bridge",
-      "Hip Thrust",
-      "Bulgarian Split Squat",
-      "Push Ups",
-      "Incline Push Ups",
-      "DB Chest Press",
-      "DB Floor Press",
-      "Incline DB Press",
-      "Shoulder Press",
-      "Arnold Press",
-      "Lateral Raise",
-      "Front Raise",
-      "Bent Over Row",
-      "One Arm Row",
-      "Renegade Row",
-      "Upright Row",
-      "Chest Supported Row",
-      "Pull Over",
-      "Bicep Curl",
-      "Hammer Curl",
-      "Tricep Kickback",
-      "Overhead Tricep Extension",
-      "Plank",
-      "Side Plank",
-      "Dead Bug",
-      "Bird Dog",
-      "Russian Twist",
-      "Mountain Climbers",
-      "Leg Raises",
-      "Sit Ups"
-    ];
+<script>
 
-    const days = ["Day 1", "Day 2", "Day 3", "Day 4"];
-    const supersetsPerDay = 5;
-    const exercisesPerSuperset = 2;
+const exercises = [
+"Squat","RDL","Lunge","Hip Thrust","Step Ups",
+"Push Ups","DB Press","Incline Press",
+"Shoulder Press","Arnold Press","Lateral Raise",
+"Row","One Arm Row","Pull Over",
+"Bicep Curl","Hammer Curl",
+"Tricep Extension","Kickback",
+"Plank","Dead Bug","Russian Twist"
+];
 
-    const app = document.getElementById("app");
+const days = ["Day 1","Day 2","Day 3","Day 4"];
 
-    function createDropdown(dayIndex, supersetIndex, exerciseIndex) {
-      const select = document.createElement("select");
-      select.id = `day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`;
+function getTargetReps(week){
+  if(week == 1 || week == 2) return 8;
+  if(week == 3 || week == 4) return 10;
+  return 12;
+}
 
-      const defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.textContent = "Select exercise";
-      select.appendChild(defaultOption);
+function renderApp(){
 
-      exerciseOptions.forEach(exercise => {
-        const option = document.createElement("option");
-        option.value = exercise;
-        option.textContent = exercise;
-        select.appendChild(option);
-      });
+  const app = document.getElementById("app");
+  app.innerHTML = "";
 
-      return select;
-    }
+  const week = document.getElementById("weekSelect").value;
+  const target = getTargetReps(week);
 
-    function createInput(type, placeholder, id) {
-      const input = document.createElement("input");
-      input.type = type;
-      input.placeholder = placeholder;
-      input.id = id;
-      return input;
-    }
+  days.forEach((day, d)=>{
 
-    function saveDay(dayIndex) {
-      const dayData = [];
+    const dayDiv = document.createElement("div");
+    dayDiv.className = "day";
 
-      for (let s = 0; s < supersetsPerDay; s++) {
-        const supersetData = [];
+    dayDiv.innerHTML = `<h3>${day} - Target: ${target} reps</h3>`;
 
-        for (let e = 0; e < exercisesPerSuperset; e++) {
-          const exerciseName = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-name`).value;
-          const weight = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-weight`).value;
-          const reps = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-reps`).value;
+    for(let s=0; s<5; s++){
 
-          supersetData.push({
-            exerciseName,
-            weight,
-            reps
-          });
-        }
+      const ss = document.createElement("div");
+      ss.className = "superset";
 
-        dayData.push(supersetData);
-      }
+      ss.innerHTML = `<strong>Superset ${s+1}</strong>`;
 
-      localStorage.setItem(`fitTrackerDay${dayIndex}`, JSON.stringify(dayData));
+      for(let e=0; e<2; e++){
 
-      const savedMessage = document.getElementById(`saved-message-${dayIndex}`);
-      savedMessage.style.display = "block";
-      savedMessage.textContent = "Saved successfully";
+        const row = document.createElement("div");
+        row.className = "exercise-row";
 
-      setTimeout(() => {
-        savedMessage.style.display = "none";
-      }, 2000);
-    }
-
-    function loadDay(dayIndex) {
-      const saved = localStorage.getItem(`fitTrackerDay${dayIndex}`);
-      if (!saved) return;
-
-      const dayData = JSON.parse(saved);
-
-      dayData.forEach((superset, s) => {
-        superset.forEach((exercise, e) => {
-          const nameEl = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-name`);
-          const weightEl = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-weight`);
-          const repsEl = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-reps`);
-
-          if (nameEl) nameEl.value = exercise.exerciseName || "";
-          if (weightEl) weightEl.value = exercise.weight || "";
-          if (repsEl) repsEl.value = exercise.reps || "";
+        const select = document.createElement("select");
+        exercises.forEach(ex=>{
+          const opt = document.createElement("option");
+          opt.value = ex;
+          opt.textContent = ex;
+          select.appendChild(opt);
         });
-      });
-    }
 
-    days.forEach((dayName, dayIndex) => {
-      const dayCard = document.createElement("div");
-      dayCard.className = "day";
+        const weight = document.createElement("input");
+        weight.placeholder = "kg";
 
-      const dayTitle = document.createElement("h2");
-      dayTitle.textContent = dayName;
-      dayCard.appendChild(dayTitle);
+        const reps = document.createElement("input");
+        reps.placeholder = target;
 
-      for (let s = 0; s < supersetsPerDay; s++) {
-        const supersetCard = document.createElement("div");
-        supersetCard.className = "superset";
+        row.appendChild(select);
+        row.appendChild(weight);
+        row.appendChild(reps);
 
-        const supersetTitle = document.createElement("h3");
-        supersetTitle.textContent = `Superset ${s + 1}`;
-        supersetCard.appendChild(supersetTitle);
-
-        for (let e = 0; e < exercisesPerSuperset; e++) {
-          const row = document.createElement("div");
-          row.className = "exercise-row";
-
-          const dropdown = createDropdown(dayIndex, s, e);
-          const weightInput = createInput("number", "Weight", `day-${dayIndex}-ss-${s}-ex-${e}-weight`);
-          const repsInput = createInput("number", "Reps", `day-${dayIndex}-ss-${s}-ex-${e}-reps`);
-
-          row.appendChild(dropdown);
-          row.appendChild(weightInput);
-          row.appendChild(repsInput);
-
-          supersetCard.appendChild(row);
-        }
-
-        dayCard.appendChild(supersetCard);
+        ss.appendChild(row);
       }
 
-      const saveBtn = document.createElement("button");
-      saveBtn.className = "save-btn";
-      saveBtn.textContent = "Save Day";
-      saveBtn.onclick = () => saveDay(dayIndex);
-      dayCard.appendChild(saveBtn);
+      dayDiv.appendChild(ss);
+    }
 
-      const savedMessage = document.createElement("div");
-      savedMessage.className = "saved-message";
-      savedMessage.id = `saved-message-${dayIndex}`;
-      dayCard.appendChild(savedMessage);
+    const save = document.createElement("button");
+    save.className = "save-btn";
+    save.innerText = "Save Day";
 
-      app.appendChild(dayCard);
-    });
+    save.onclick = ()=>{
+      localStorage.setItem(`week${week}-day${d}`, dayDiv.innerHTML);
+      alert("Saved");
+    };
 
-    days.forEach((_, dayIndex) => loadDay(dayIndex));
-  </script>
+    dayDiv.appendChild(save);
+    app.appendChild(dayDiv);
+  });
+
+}
+
+renderApp();
+
+let timer;
+let timeLeft = 60;
+
+function startTimer(sec){
+  clearInterval(timer);
+  timeLeft = sec;
+
+  timer = setInterval(()=>{
+    timeLeft--;
+    document.getElementById("timer").innerText = timeLeft + "s";
+
+    if(timeLeft<=0){
+      clearInterval(timer);
+      alert("Rest done");
+    }
+  },1000);
+}
+
+function resetTimer(){
+  clearInterval(timer);
+  timeLeft = 60;
+  document.getElementById("timer").innerText = "60s";
+}
+
+</script>
+
 </body>
 </html>
