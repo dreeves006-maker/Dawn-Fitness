@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Fit Tracker</title>
+  <title>My Fit Coach</title>
   <style>
     * {
       box-sizing: border-box;
@@ -19,55 +19,72 @@
 
     header {
       background: linear-gradient(135deg, #22c55e, #16a34a);
-      padding: 18px 16px;
+      padding: 16px 14px 12px;
       text-align: center;
-      font-size: 24px;
-      font-weight: bold;
       position: sticky;
       top: 0;
-      z-index: 30;
+      z-index: 50;
       box-shadow: 0 4px 16px rgba(0,0,0,0.25);
     }
 
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
     .subhead {
-      font-size: 14px;
-      font-weight: normal;
-      margin-top: 6px;
+      margin-top: 4px;
+      font-size: 13px;
       opacity: 0.95;
     }
 
     .container {
-      padding: 16px;
-      max-width: 950px;
+      max-width: 1000px;
       margin: 0 auto;
+      padding: 14px;
     }
 
-    .top-bar {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
+    .top-controls {
       background: #1e293b;
       border: 1px solid #334155;
-      padding: 14px;
       border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 14px;
     }
 
-    .top-bar label {
-      font-size: 14px;
-      color: #cbd5e1;
+    .top-controls-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+    }
+
+    .control-group label {
       display: block;
+      font-size: 13px;
+      color: #cbd5e1;
       margin-bottom: 6px;
     }
 
-    .week-box select {
-      padding: 10px 12px;
-      border-radius: 10px;
+    .control-group select {
+      min-width: 140px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 11px 12px;
       border: none;
+      border-radius: 10px;
       font-size: 15px;
-      min-width: 130px;
+    }
+
+    .week-summary {
+      font-size: 14px;
+      color: #cbd5e1;
+      padding: 11px 14px;
+      background: #111827;
+      border-radius: 12px;
     }
 
     .tip-box {
@@ -75,84 +92,85 @@
       color: white;
       padding: 12px 14px;
       border-radius: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       line-height: 1.45;
       font-size: 14px;
     }
 
-    .days-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+      position: sticky;
+      top: 86px;
+      z-index: 40;
+      background: #0f172a;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-weight: bold;
+      color: white;
+      background: #334155;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .tab-btn.active {
+      background: #22c55e;
+      color: white;
+      box-shadow: 0 4px 12px rgba(34,197,94,0.3);
+    }
+
+    .day-panel {
+      display: none;
+    }
+
+    .day-panel.active {
+      display: block;
     }
 
     .day-card {
       background: #1e293b;
-      border-radius: 18px;
-      overflow: hidden;
       border: 1px solid #334155;
+      border-radius: 18px;
+      padding: 16px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.22);
     }
 
     .day-header {
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      cursor: pointer;
-    }
-
-    .day-header-left {
       display: flex;
       align-items: center;
       gap: 12px;
-      min-width: 0;
+      margin-bottom: 8px;
     }
 
-    .day-badge {
+    .day-accent {
       width: 14px;
-      height: 48px;
+      height: 54px;
       border-radius: 999px;
       flex-shrink: 0;
     }
 
-    .day-title-group h2 {
+    .accent-1 { background: #22c55e; }
+    .accent-2 { background: #38bdf8; }
+    .accent-3 { background: #f59e0b; }
+    .accent-4 { background: #f472b6; }
+
+    .day-title {
       margin: 0;
-      font-size: 22px;
+      font-size: 26px;
     }
 
     .day-subtitle {
       margin-top: 4px;
       color: #cbd5e1;
-      font-size: 13px;
-    }
-
-    .day-toggle {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: white;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    .day-content {
-      padding: 0 16px 16px 16px;
-      display: none;
-      border-top: 1px solid #334155;
-      background: #172131;
-    }
-
-    .day-card.active .day-content {
-      display: block;
-    }
-
-    .day-card.active .day-toggle {
-      background: #22c55e;
-      color: white;
-      border-color: #22c55e;
+      font-size: 14px;
     }
 
     .superset {
@@ -165,99 +183,105 @@
 
     .superset-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       gap: 10px;
       margin-bottom: 12px;
       flex-wrap: wrap;
     }
 
-    .superset h3 {
+    .superset-title {
       margin: 0;
+      font-size: 18px;
       color: #86efac;
-      font-size: 17px;
     }
 
-    .small-btn {
+    .complete-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
       background: #334155;
       color: white;
-      border: none;
-      padding: 9px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 13px;
       font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
     }
 
-    .small-btn.done {
+    .complete-btn.done {
       background: #16a34a;
+    }
+
+    .exercise-block {
+      margin-bottom: 12px;
     }
 
     .exercise-row {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
-    select, input {
-      width: 100%;
-      padding: 11px 12px;
+    .history,
+    .coaching {
+      font-size: 13px;
+      line-height: 1.4;
       border-radius: 10px;
-      border: none;
-      font-size: 15px;
+      padding: 9px 10px;
+      margin-top: 6px;
     }
 
     .history {
-      font-size: 13px;
-      color: #cbd5e1;
-      margin: 2px 0 10px 0;
       background: #1e293b;
-      padding: 9px 10px;
-      border-radius: 10px;
-      line-height: 1.35;
+      color: #cbd5e1;
+    }
+
+    .coaching {
+      background: rgba(34, 197, 94, 0.12);
+      color: #86efac;
+      font-weight: bold;
     }
 
     .save-btn {
-      background: #22c55e;
-      color: white;
-      border: none;
-      padding: 13px 16px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
       width: 100%;
       margin-top: 16px;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 16px;
+      background: #22c55e;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .saved-message {
+      display: none;
       margin-top: 10px;
+      text-align: center;
       color: #86efac;
       font-size: 14px;
-      display: none;
-      text-align: center;
     }
 
     .timer-bar {
       position: fixed;
-      bottom: 0;
       left: 0;
+      bottom: 0;
       width: 100%;
       background: #22c55e;
-      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
+      padding: 12px 14px;
       box-shadow: 0 -4px 14px rgba(0,0,0,0.25);
-      z-index: 1000;
+      z-index: 100;
     }
 
     .timer-display {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
-      min-width: 72px;
+      min-width: 84px;
     }
 
     .timer-buttons {
@@ -268,27 +292,27 @@
     }
 
     .timer-buttons button {
-      padding: 9px 12px;
       border: none;
       border-radius: 10px;
+      padding: 10px 12px;
       background: white;
       color: #16a34a;
       font-weight: bold;
       cursor: pointer;
     }
 
-    .accent-1 { background: #22c55e; }
-    .accent-2 { background: #38bdf8; }
-    .accent-3 { background: #f59e0b; }
-    .accent-4 { background: #f472b6; }
-
     @media (max-width: 700px) {
+      .tabs {
+        grid-template-columns: repeat(2, 1fr);
+        top: 82px;
+      }
+
       .exercise-row {
         grid-template-columns: 1fr;
       }
 
-      .day-title-group h2 {
-        font-size: 19px;
+      .day-title {
+        font-size: 22px;
       }
 
       .timer-bar {
@@ -308,33 +332,37 @@
 </head>
 <body>
   <header>
-    💪 My Fit Tracker
-    <div class="subhead">6-week plan • 4 days per week • 5 supersets per day</div>
+    <h1>💪 My Fit Coach</h1>
+    <div class="subhead">6-week plan • 4 days per week • 5 supersets • coaching prompts built in</div>
   </header>
 
   <div class="container">
-    <div class="top-bar">
-      <div class="week-box">
-        <label for="weekSelect">Select week</label>
-        <select id="weekSelect">
-          <option value="1">Week 1</option>
-          <option value="2">Week 2</option>
-          <option value="3">Week 3</option>
-          <option value="4">Week 4</option>
-          <option value="5">Week 5</option>
-          <option value="6">Week 6</option>
-        </select>
-      </div>
-      <div style="color:#cbd5e1;font-size:14px;">
-        Rep target: <strong id="repTarget">8</strong>
+    <div class="top-controls">
+      <div class="top-controls-row">
+        <div class="control-group">
+          <label for="weekSelect">Select week</label>
+          <select id="weekSelect">
+            <option value="1">Week 1</option>
+            <option value="2">Week 2</option>
+            <option value="3">Week 3</option>
+            <option value="4">Week 4</option>
+            <option value="5">Week 5</option>
+            <option value="6">Week 6</option>
+          </select>
+        </div>
+
+        <div class="week-summary">
+          Current rep target: <strong id="repTarget">8</strong>
+        </div>
       </div>
     </div>
 
     <div class="tip-box">
-      Each day is now in its own section. Tap a day to open it. Only one day opens at a time, so the screen feels much cleaner.
+      Pick your week, then tap Day 1 to Day 4 above. Each week follows your 8 → 10 → 12 progression across 6 weeks.
     </div>
 
-    <div id="app" class="days-wrap"></div>
+    <div class="tabs" id="dayTabs"></div>
+    <div id="app"></div>
   </div>
 
   <div class="timer-bar">
@@ -386,14 +414,18 @@
       "Sit Ups"
     ];
 
-    const dayColors = ["accent-1", "accent-2", "accent-3", "accent-4"];
     const days = ["Day 1", "Day 2", "Day 3", "Day 4"];
+    const accents = ["accent-1", "accent-2", "accent-3", "accent-4"];
     const supersetsPerDay = 5;
     const exercisesPerSuperset = 2;
+    let currentDayIndex = 0;
+
     const app = document.getElementById("app");
+    const dayTabs = document.getElementById("dayTabs");
+    const weekSelect = document.getElementById("weekSelect");
 
     function getWeek() {
-      return document.getElementById("weekSelect").value;
+      return weekSelect.value;
     }
 
     function getTargetReps(week) {
@@ -402,74 +434,146 @@
       return 12;
     }
 
-    function getDayKey(week, dayIndex) {
-      return `fitTracker-week${week}-day${dayIndex}`;
+    function getDayStorageKey(week, dayIndex) {
+      return `fitcoach-week${week}-day${dayIndex}`;
     }
 
-    function getExerciseKey(exerciseName) {
-      return `exerciseHistory-${exerciseName}`;
+    function getCompleteStorageKey(week, dayIndex, supersetIndex) {
+      return `fitcoach-week${week}-day${dayIndex}-superset${supersetIndex}-done`;
     }
 
-    function getCompleteKey(week, dayIndex, supersetIndex) {
-      return `complete-week${week}-day${dayIndex}-ss${supersetIndex}`;
+    function getExerciseHistoryKey(exerciseName) {
+      return `fitcoach-history-${exerciseName}`;
     }
 
     function saveExerciseHistory(exerciseName, weight, reps) {
       if (!exerciseName) return;
-      const history = {
+
+      const entry = {
         weight: weight || "",
         reps: reps || "",
         date: new Date().toLocaleDateString()
       };
-      localStorage.setItem(getExerciseKey(exerciseName), JSON.stringify(history));
+
+      localStorage.setItem(getExerciseHistoryKey(exerciseName), JSON.stringify(entry));
     }
 
     function getExerciseHistory(exerciseName) {
       if (!exerciseName) return null;
-      const saved = localStorage.getItem(getExerciseKey(exerciseName));
+      const saved = localStorage.getItem(getExerciseHistoryKey(exerciseName));
       return saved ? JSON.parse(saved) : null;
     }
 
-    function updateHistoryDisplay(dayIndex, supersetIndex, exerciseIndex) {
-      const exerciseName = document.getElementById(`day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`)?.value || "";
-      const historyBox = document.getElementById(`history-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
-      if (!historyBox) return;
-
-      const history = getExerciseHistory(exerciseName);
+    function getCoachingPrompt(exerciseName, repsValue, week) {
+      const target = getTargetReps(week);
 
       if (!exerciseName) {
-        historyBox.textContent = "Last workout: none yet";
-        return;
+        return "Choose an exercise to get coaching guidance.";
       }
 
-      if (history) {
-        historyBox.textContent = `Last workout: ${history.weight || "-"} kg, ${history.reps || "-"} reps on ${history.date}`;
-      } else {
-        historyBox.textContent = "Last workout: none yet";
+      const numericReps = Number(repsValue);
+
+      if (!numericReps) {
+        return `Aim for ${target} reps this week.`;
       }
+
+      if (numericReps >= 12) {
+        return "You hit 12 reps. Increase weight next time.";
+      }
+
+      if (numericReps >= 10 && target === 10) {
+        return "Great. Next phase is 12 reps.";
+      }
+
+      if (numericReps >= 10 && target === 8) {
+        return "You are above target. Increase weight if form feels strong.";
+      }
+
+      if (numericReps >= 8 && target === 8) {
+        return "Good. Stay here or build slightly if form feels solid.";
+      }
+
+      if (numericReps >= target) {
+        return "On target. Keep building steadily.";
+      }
+
+      return `Stay with this weight until you can hit ${target} reps.`;
+    }
+
+    function createDropdown(dayIndex, supersetIndex, exerciseIndex) {
+      const select = document.createElement("select");
+      select.id = `day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`;
+
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "Select exercise";
+      select.appendChild(defaultOption);
+
+      exerciseOptions.forEach(exercise => {
+        const option = document.createElement("option");
+        option.value = exercise;
+        option.textContent = exercise;
+        select.appendChild(option);
+      });
+
+      select.addEventListener("change", () => updateExerciseMeta(dayIndex, supersetIndex, exerciseIndex));
+      return select;
+    }
+
+    function createInput(id, placeholder, dayIndex, supersetIndex, exerciseIndex) {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.id = id;
+      input.placeholder = placeholder;
+      input.addEventListener("input", () => updateExerciseMeta(dayIndex, supersetIndex, exerciseIndex));
+      return input;
+    }
+
+    function updateExerciseMeta(dayIndex, supersetIndex, exerciseIndex) {
+      const week = getWeek();
+      const nameEl = document.getElementById(`day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`);
+      const repsEl = document.getElementById(`day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-reps`);
+      const historyEl = document.getElementById(`history-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+      const coachingEl = document.getElementById(`coaching-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+
+      if (!nameEl || !repsEl || !historyEl || !coachingEl) return;
+
+      const exerciseName = nameEl.value;
+      const repsValue = repsEl.value;
+      const history = getExerciseHistory(exerciseName);
+
+      if (history) {
+        historyEl.textContent = `Last workout: ${history.weight || "-"} kg, ${history.reps || "-"} reps on ${history.date}`;
+      } else {
+        historyEl.textContent = "Last workout: none yet";
+      }
+
+      coachingEl.textContent = getCoachingPrompt(exerciseName, repsValue, week);
     }
 
     function toggleComplete(dayIndex, supersetIndex) {
       const week = getWeek();
-      const key = getCompleteKey(week, dayIndex, supersetIndex);
+      const key = getCompleteStorageKey(week, dayIndex, supersetIndex);
       const current = localStorage.getItem(key) === "true";
-      const newValue = !current;
-      localStorage.setItem(key, newValue);
+      const next = !current;
+      localStorage.setItem(key, next);
 
-      const button = document.getElementById(`complete-btn-${dayIndex}-${supersetIndex}`);
-      button.textContent = newValue ? "Completed ✓" : "Mark Complete";
-      button.classList.toggle("done", newValue);
+      const btn = document.getElementById(`complete-btn-${dayIndex}-${supersetIndex}`);
+      if (btn) {
+        btn.textContent = next ? "Completed ✓" : "Mark Complete";
+        btn.classList.toggle("done", next);
+      }
     }
 
     function loadCompleteState(dayIndex, supersetIndex) {
       const week = getWeek();
-      const key = getCompleteKey(week, dayIndex, supersetIndex);
-      const isDone = localStorage.getItem(key) === "true";
-      const button = document.getElementById(`complete-btn-${dayIndex}-${supersetIndex}`);
-      if (!button) return;
-
-      button.textContent = isDone ? "Completed ✓" : "Mark Complete";
-      button.classList.toggle("done", isDone);
+      const key = getCompleteStorageKey(week, dayIndex, supersetIndex);
+      const done = localStorage.getItem(key) === "true";
+      const btn = document.getElementById(`complete-btn-${dayIndex}-${supersetIndex}`);
+      if (btn) {
+        btn.textContent = done ? "Completed ✓" : "Mark Complete";
+        btn.classList.toggle("done", done);
+      }
     }
 
     function saveDay(dayIndex) {
@@ -491,26 +595,27 @@
         dayData.push(supersetData);
       }
 
-      localStorage.setItem(getDayKey(week, dayIndex), JSON.stringify(dayData));
+      localStorage.setItem(getDayStorageKey(week, dayIndex), JSON.stringify(dayData));
 
       const savedMessage = document.getElementById(`saved-message-${dayIndex}`);
-      savedMessage.style.display = "block";
-      savedMessage.textContent = "Saved successfully";
-
-      setTimeout(() => {
-        savedMessage.style.display = "none";
-      }, 1800);
+      if (savedMessage) {
+        savedMessage.style.display = "block";
+        savedMessage.textContent = "Saved successfully";
+        setTimeout(() => {
+          savedMessage.style.display = "none";
+        }, 1800);
+      }
 
       for (let s = 0; s < supersetsPerDay; s++) {
         for (let e = 0; e < exercisesPerSuperset; e++) {
-          updateHistoryDisplay(dayIndex, s, e);
+          updateExerciseMeta(dayIndex, s, e);
         }
       }
     }
 
     function loadDay(dayIndex) {
       const week = getWeek();
-      const saved = localStorage.getItem(getDayKey(week, dayIndex));
+      const saved = localStorage.getItem(getDayStorageKey(week, dayIndex));
       if (!saved) return;
 
       const dayData = JSON.parse(saved);
@@ -528,44 +633,27 @@
       });
     }
 
-    function createDropdown(dayIndex, supersetIndex, exerciseIndex) {
-      const select = document.createElement("select");
-      select.id = `day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`;
+    function renderTabs() {
+      dayTabs.innerHTML = "";
 
-      const defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.textContent = "Select exercise";
-      select.appendChild(defaultOption);
-
-      exerciseOptions.forEach(exercise => {
-        const option = document.createElement("option");
-        option.value = exercise;
-        option.textContent = exercise;
-        select.appendChild(option);
+      days.forEach((day, index) => {
+        const btn = document.createElement("button");
+        btn.className = "tab-btn" + (index === currentDayIndex ? " active" : "");
+        btn.textContent = day;
+        btn.onclick = () => switchDay(index);
+        dayTabs.appendChild(btn);
       });
-
-      select.addEventListener("change", () => {
-        updateHistoryDisplay(dayIndex, supersetIndex, exerciseIndex);
-      });
-
-      return select;
     }
 
-    function createInput(type, placeholder, id) {
-      const input = document.createElement("input");
-      input.type = type;
-      input.placeholder = placeholder;
-      input.id = id;
-      return input;
-    }
+    function switchDay(dayIndex) {
+      currentDayIndex = dayIndex;
 
-    function toggleDay(dayIndex) {
-      document.querySelectorAll(".day-card").forEach((card, index) => {
-        if (index === dayIndex) {
-          card.classList.toggle("active");
-        } else {
-          card.classList.remove("active");
-        }
+      document.querySelectorAll(".day-panel").forEach((panel, index) => {
+        panel.classList.toggle("active", index === dayIndex);
+      });
+
+      document.querySelectorAll(".tab-btn").forEach((btn, index) => {
+        btn.classList.toggle("active", index === dayIndex);
       });
     }
 
@@ -575,96 +663,94 @@
       document.getElementById("repTarget").textContent = target;
       app.innerHTML = "";
 
+      renderTabs();
+
       days.forEach((dayName, dayIndex) => {
+        const panel = document.createElement("div");
+        panel.className = "day-panel" + (dayIndex === currentDayIndex ? " active" : "");
+
         const dayCard = document.createElement("div");
-        dayCard.className = "day-card" + (dayIndex === 0 ? " active" : "");
+        dayCard.className = "day-card";
 
         const dayHeader = document.createElement("div");
         dayHeader.className = "day-header";
-        dayHeader.onclick = () => toggleDay(dayIndex);
-
-        const left = document.createElement("div");
-        left.className = "day-header-left";
-
-        const badge = document.createElement("div");
-        badge.className = `day-badge ${dayColors[dayIndex]}`;
-
-        const titleGroup = document.createElement("div");
-        titleGroup.className = "day-title-group";
-        titleGroup.innerHTML = `
-          <h2>${dayName}</h2>
-          <div class="day-subtitle">Week ${week} • Target ${target} reps</div>
+        dayHeader.innerHTML = `
+          <div class="day-accent ${accents[dayIndex]}"></div>
+          <div>
+            <h2 class="day-title">${dayName}</h2>
+            <div class="day-subtitle">Week ${week} • Target ${target} reps</div>
+          </div>
         `;
-
-        const toggle = document.createElement("div");
-        toggle.className = "day-toggle";
-        toggle.textContent = "Open / Close";
-
-        left.appendChild(badge);
-        left.appendChild(titleGroup);
-        dayHeader.appendChild(left);
-        dayHeader.appendChild(toggle);
-
-        const dayContent = document.createElement("div");
-        dayContent.className = "day-content";
+        dayCard.appendChild(dayHeader);
 
         for (let s = 0; s < supersetsPerDay; s++) {
-          const supersetCard = document.createElement("div");
-          supersetCard.className = "superset";
+          const superset = document.createElement("div");
+          superset.className = "superset";
 
           const supersetHeader = document.createElement("div");
           supersetHeader.className = "superset-header";
 
-          const supersetTitle = document.createElement("h3");
-          supersetTitle.textContent = `Superset ${s + 1}`;
+          const title = document.createElement("h3");
+          title.className = "superset-title";
+          title.textContent = `Superset ${s + 1}`;
 
           const completeBtn = document.createElement("button");
-          completeBtn.className = "small-btn";
+          completeBtn.className = "complete-btn";
           completeBtn.id = `complete-btn-${dayIndex}-${s}`;
           completeBtn.textContent = "Mark Complete";
           completeBtn.onclick = () => toggleComplete(dayIndex, s);
 
-          supersetHeader.appendChild(supersetTitle);
+          supersetHeader.appendChild(title);
           supersetHeader.appendChild(completeBtn);
-          supersetCard.appendChild(supersetHeader);
+          superset.appendChild(supersetHeader);
 
           for (let e = 0; e < exercisesPerSuperset; e++) {
+            const block = document.createElement("div");
+            block.className = "exercise-block";
+
             const row = document.createElement("div");
             row.className = "exercise-row";
 
             const dropdown = createDropdown(dayIndex, s, e);
-            const weightInput = createInput("number", "Weight", `day-${dayIndex}-ss-${s}-ex-${e}-weight`);
-            const repsInput = createInput("number", `Reps (${target})`, `day-${dayIndex}-ss-${s}-ex-${e}-reps`);
+            const weightInput = createInput(`day-${dayIndex}-ss-${s}-ex-${e}-weight`, "Weight", dayIndex, s, e);
+            const repsInput = createInput(`day-${dayIndex}-ss-${s}-ex-${e}-reps`, `Target ${target}`, dayIndex, s, e);
 
             row.appendChild(dropdown);
             row.appendChild(weightInput);
             row.appendChild(repsInput);
-            supersetCard.appendChild(row);
 
-            const historyBox = document.createElement("div");
-            historyBox.className = "history";
-            historyBox.id = `history-${dayIndex}-${s}-${e}`;
-            historyBox.textContent = "Last workout: none yet";
-            supersetCard.appendChild(historyBox);
+            const history = document.createElement("div");
+            history.className = "history";
+            history.id = `history-${dayIndex}-${s}-${e}`;
+            history.textContent = "Last workout: none yet";
+
+            const coaching = document.createElement("div");
+            coaching.className = "coaching";
+            coaching.id = `coaching-${dayIndex}-${s}-${e}`;
+            coaching.textContent = "Choose an exercise to get coaching guidance.";
+
+            block.appendChild(row);
+            block.appendChild(history);
+            block.appendChild(coaching);
+            superset.appendChild(block);
           }
 
-          dayContent.appendChild(supersetCard);
+          dayCard.appendChild(superset);
         }
 
         const saveBtn = document.createElement("button");
         saveBtn.className = "save-btn";
         saveBtn.textContent = "Save Day";
         saveBtn.onclick = () => saveDay(dayIndex);
-        dayContent.appendChild(saveBtn);
+        dayCard.appendChild(saveBtn);
 
         const savedMessage = document.createElement("div");
         savedMessage.className = "saved-message";
         savedMessage.id = `saved-message-${dayIndex}`;
-        dayContent.appendChild(savedMessage);
+        dayCard.appendChild(savedMessage);
 
-        dayCard.appendChild(dayHeader);
-        dayCard.appendChild(dayContent);
-        app.appendChild(dayCard);
+        panel.appendChild(dayCard);
+        app.appendChild(panel);
       });
 
       days.forEach((_, dayIndex) => {
@@ -672,13 +758,17 @@
         for (let s = 0; s < supersetsPerDay; s++) {
           loadCompleteState(dayIndex, s);
           for (let e = 0; e < exercisesPerSuperset; e++) {
-            updateHistoryDisplay(dayIndex, s, e);
+            updateExerciseMeta(dayIndex, s, e);
           }
         }
       });
+
+      switchDay(currentDayIndex);
     }
 
-    document.getElementById("weekSelect").addEventListener("change", renderApp);
+    weekSelect.addEventListener("change", () => {
+      renderApp();
+    });
 
     let workoutTimer;
     let totalSeconds = 0;
@@ -687,6 +777,7 @@
     function startWorkout() {
       if (running) return;
       running = true;
+
       workoutTimer = setInterval(() => {
         totalSeconds++;
         updateWorkoutDisplay();
@@ -708,7 +799,7 @@
     function updateWorkoutDisplay() {
       const mins = Math.floor(totalSeconds / 60);
       const secs = totalSeconds % 60;
-      document.getElementById("timer").innerText =
+      document.getElementById("timer").textContent =
         `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
     }
 
