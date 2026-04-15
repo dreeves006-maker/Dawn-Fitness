@@ -5,272 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dawn Fitness</title>
   <meta name="theme-color" content="#22c55e" />
-  <meta name="description" content="Dawn Fitness - 6 week strength tracker with 4 training days, supersets, 3 rounds per superset, workout timer, and coaching prompts." />
+  <meta name="description" content="Dawn Fitness - 6 week strength tracker with proper 8, 10, 12 progression tracking." />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
   <style>
     * { box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #0f172a;
-      color: white;
-      padding-bottom: 100px;
-    }
-    header {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      padding: 16px 14px 12px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-    }
+    body { font-family: Arial, sans-serif; margin: 0; background: #0f172a; color: white; padding-bottom: 100px; }
+    header { background: linear-gradient(135deg, #22c55e, #16a34a); padding: 16px 14px 12px; text-align: center; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
     header h1 { margin: 0; font-size: 24px; letter-spacing: 0.3px; }
     .subhead { margin-top: 4px; font-size: 13px; opacity: 0.95; }
     .container { max-width: 1000px; margin: 0 auto; padding: 14px; }
-    .top-controls {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 14px;
-    }
-    .top-controls-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: end;
-      justify-content: space-between;
-    }
-    .control-group label {
-      display: block;
-      font-size: 13px;
-      color: #cbd5e1;
-      margin-bottom: 6px;
-    }
+    .top-controls { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 12px; margin-bottom: 14px; }
+    .top-controls-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; justify-content: space-between; }
+    .control-group label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; }
     .control-group select { min-width: 140px; }
-    select, input {
-      width: 100%;
-      padding: 11px 12px;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-    }
-    .week-summary {
-      font-size: 14px;
-      color: #cbd5e1;
-      padding: 11px 14px;
-      background: #111827;
-      border-radius: 12px;
-    }
-    .tip-box {
-      background: #1d4ed8;
-      color: white;
-      padding: 12px 14px;
-      border-radius: 14px;
-      margin-bottom: 14px;
-      line-height: 1.45;
-      font-size: 14px;
-    }
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-      position: sticky;
-      top: 90px;
-      z-index: 40;
-      background: #0f172a;
-      padding-top: 4px;
-      padding-bottom: 4px;
-    }
-    .tab-btn {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 10px;
-      font-weight: bold;
-      color: white;
-      background: #334155;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .tab-btn.active {
-      background: #22c55e;
-      color: white;
-      box-shadow: 0 4px 12px rgba(34,197,94,0.3);
-    }
+    select, input { width: 100%; padding: 11px 12px; border: none; border-radius: 10px; font-size: 15px; }
+    .week-summary { font-size: 14px; color: #cbd5e1; padding: 11px 14px; background: #111827; border-radius: 12px; }
+    .tip-box { background: #1d4ed8; color: white; padding: 12px 14px; border-radius: 14px; margin-bottom: 14px; line-height: 1.45; font-size: 14px; }
+    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; position: sticky; top: 90px; z-index: 40; background: #0f172a; padding-top: 4px; padding-bottom: 4px; }
+    .tab-btn { border: none; border-radius: 12px; padding: 12px 10px; font-weight: bold; color: white; background: #334155; cursor: pointer; font-size: 14px; }
+    .tab-btn.active { background: #22c55e; color: white; box-shadow: 0 4px 12px rgba(34,197,94,0.3); }
     .day-panel { display: none; }
     .day-panel.active { display: block; }
-    .day-card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.22);
-    }
-    .day-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    .day-accent {
-      width: 14px;
-      height: 54px;
-      border-radius: 999px;
-      flex-shrink: 0;
-    }
-    .accent-1 { background: #22c55e; }
-    .accent-2 { background: #38bdf8; }
-    .accent-3 { background: #f59e0b; }
-    .accent-4 { background: #f472b6; }
+    .day-card { background: #1e293b; border: 1px solid #334155; border-radius: 18px; padding: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.22); }
+    .day-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .day-accent { width: 14px; height: 54px; border-radius: 999px; flex-shrink: 0; }
+    .accent-1 { background: #22c55e; } .accent-2 { background: #38bdf8; } .accent-3 { background: #f59e0b; } .accent-4 { background: #f472b6; }
     .day-title { margin: 0; font-size: 26px; }
     .day-subtitle { margin-top: 4px; color: #cbd5e1; font-size: 14px; }
-    .superset {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 14px;
-    }
-    .superset-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .superset-title {
-      margin: 0;
-      font-size: 18px;
-      color: #86efac;
-    }
-    .complete-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 9px 12px;
-      background: #334155;
-      color: white;
-      font-weight: bold;
-      font-size: 13px;
-      cursor: pointer;
-    }
+    .superset { background: #0f172a; border: 1px solid #334155; border-radius: 14px; padding: 14px; margin-top: 14px; }
+    .superset-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .superset-title { margin: 0; font-size: 18px; color: #86efac; }
+    .complete-btn { border: none; border-radius: 10px; padding: 9px 12px; background: #334155; color: white; font-weight: bold; font-size: 13px; cursor: pointer; }
     .complete-btn.done { background: #16a34a; }
-    .rounds-box {
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 12px;
-    }
-    .rounds-title {
-      font-size: 13px;
-      color: #cbd5e1;
-      margin-bottom: 8px;
-    }
-    .round-buttons {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .round-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 9px 12px;
-      background: #334155;
-      color: white;
-      font-weight: bold;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .round-btn.done {
-      background: #22c55e;
-      color: white;
-    }
-    .round-status {
-      margin-top: 8px;
-      font-size: 13px;
-      color: #86efac;
-    }
-    .exercise-block { margin-bottom: 12px; }
-    .exercise-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-    .history, .coaching {
-      font-size: 13px;
-      line-height: 1.4;
-      border-radius: 10px;
-      padding: 9px 10px;
-      margin-top: 6px;
-    }
-    .history {
-      background: #1e293b;
-      color: #cbd5e1;
-    }
-    .coaching {
-      background: rgba(34, 197, 94, 0.12);
-      color: #86efac;
-      font-weight: bold;
-    }
-    .save-btn {
-      width: 100%;
-      margin-top: 16px;
-      border: none;
-      border-radius: 12px;
-      padding: 13px 16px;
-      background: #22c55e;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .saved-message {
-      display: none;
-      margin-top: 10px;
-      text-align: center;
-      color: #86efac;
-      font-size: 14px;
-    }
-    .timer-bar {
-      position: fixed;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      background: #22c55e;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      box-shadow: 0 -4px 14px rgba(0,0,0,0.25);
-      z-index: 100;
-    }
-    .timer-display {
-      font-size: 24px;
-      font-weight: bold;
-      min-width: 84px;
-    }
-    .timer-buttons {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .timer-buttons button {
-      border: none;
-      border-radius: 10px;
-      padding: 10px 12px;
-      background: white;
-      color: #16a34a;
-      font-weight: bold;
-      cursor: pointer;
-    }
+    .rounds-box { background: #111827; border: 1px solid #334155; border-radius: 12px; padding: 10px; margin-bottom: 12px; }
+    .rounds-title { font-size: 13px; color: #cbd5e1; margin-bottom: 8px; }
+    .round-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .round-btn { border: none; border-radius: 10px; padding: 9px 12px; background: #334155; color: white; font-weight: bold; font-size: 13px; cursor: pointer; }
+    .round-btn.done { background: #22c55e; color: white; }
+    .round-status { margin-top: 8px; font-size: 13px; color: #86efac; }
+    .exercise-block { margin-bottom: 14px; }
+    .exercise-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+    .progress-strip { display: flex; gap: 8px; margin-top: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .progress-chip { background: #1e293b; border: 1px solid #334155; border-radius: 999px; padding: 6px 10px; font-size: 12px; color: #cbd5e1; }
+    .progress-chip.active { background: #22c55e; color: white; border-color: #22c55e; font-weight: bold; }
+    .history, .coaching { font-size: 13px; line-height: 1.4; border-radius: 10px; padding: 9px 10px; margin-top: 6px; }
+    .history { background: #1e293b; color: #cbd5e1; }
+    .coaching { background: rgba(34, 197, 94, 0.12); color: #86efac; font-weight: bold; }
+    .save-btn { width: 100%; margin-top: 16px; border: none; border-radius: 12px; padding: 13px 16px; background: #22c55e; color: white; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .saved-message { display: none; margin-top: 10px; text-align: center; color: #86efac; font-size: 14px; }
+    .timer-bar { position: fixed; left: 0; bottom: 0; width: 100%; background: #22c55e; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; box-shadow: 0 -4px 14px rgba(0,0,0,0.25); z-index: 100; }
+    .timer-display { font-size: 24px; font-weight: bold; min-width: 84px; }
+    .timer-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .timer-buttons button { border: none; border-radius: 10px; padding: 10px 12px; background: white; color: #16a34a; font-weight: bold; cursor: pointer; }
     @media (max-width: 700px) {
       .tabs { grid-template-columns: repeat(2, 1fr); top: 86px; }
       .exercise-row { grid-template-columns: 1fr; }
@@ -284,7 +72,7 @@
 <body>
   <header>
     <h1>💪 Dawn Fitness</h1>
-    <div class="subhead">6-week plan • 4 days per week • 5 supersets • 3 rounds per superset</div>
+    <div class="subhead">6-week plan • 4 days per week • proper 8 → 10 → 12 progression</div>
   </header>
 
   <div class="container">
@@ -302,13 +90,13 @@
           </select>
         </div>
         <div class="week-summary">
-          Current rep target: <strong id="repTarget">8</strong>
+          Progression: <strong id="repTarget">8 → 10 → 12</strong>
         </div>
       </div>
     </div>
 
     <div class="tip-box">
-      Each superset now includes <strong>Round 1, Round 2, and Round 3</strong> so you can clearly complete the same steps three times.
+      Each exercise now tracks its own progression. Hit <strong>8 reps</strong>, then aim for <strong>10</strong>, then <strong>12</strong>. Once you hit 12, the app tells you to increase weight and restart at 8.
     </div>
 
     <div class="tabs" id="dayTabs"></div>
@@ -344,6 +132,7 @@
     const supersetsPerDay = 5;
     const exercisesPerSuperset = 2;
     const roundsPerSuperset = 3;
+    const progressionTargets = [8, 10, 12];
     let currentDayIndex = 0;
 
     const app = document.getElementById("app");
@@ -351,27 +140,23 @@
     const weekSelect = document.getElementById("weekSelect");
 
     function getWeek() { return weekSelect.value; }
+    function getDayStorageKey(week, dayIndex) { return `dawnfitness-v3-week${week}-day${dayIndex}`; }
+    function getCompleteStorageKey(week, dayIndex, supersetIndex) { return `dawnfitness-v3-week${week}-day${dayIndex}-superset${supersetIndex}-done`; }
+    function getRoundStorageKey(week, dayIndex, supersetIndex, roundIndex) { return `dawnfitness-v3-week${week}-day${dayIndex}-superset${supersetIndex}-round${roundIndex}`; }
+    function getExerciseHistoryKey(exerciseName) { return `dawnfitness-v3-history-${exerciseName}`; }
+    function getExerciseProgressKey(exerciseName) { return `dawnfitness-v3-progress-${exerciseName}`; }
 
-    function getTargetReps(week) {
-      if (week === "1" || week === "2") return 8;
-      if (week === "3" || week === "4") return 10;
-      return 12;
+    function getProgressStage(exerciseName) {
+      if (!exerciseName) return 0;
+      const saved = localStorage.getItem(getExerciseProgressKey(exerciseName));
+      const stage = Number(saved);
+      if (Number.isNaN(stage)) return 0;
+      return Math.min(Math.max(stage, 0), 2);
     }
 
-    function getDayStorageKey(week, dayIndex) {
-      return `dawnfitness-week${week}-day${dayIndex}`;
-    }
-
-    function getCompleteStorageKey(week, dayIndex, supersetIndex) {
-      return `dawnfitness-week${week}-day${dayIndex}-superset${supersetIndex}-done`;
-    }
-
-    function getRoundStorageKey(week, dayIndex, supersetIndex, roundIndex) {
-      return `dawnfitness-week${week}-day${dayIndex}-superset${supersetIndex}-round${roundIndex}`;
-    }
-
-    function getExerciseHistoryKey(exerciseName) {
-      return `dawnfitness-history-${exerciseName}`;
+    function setProgressStage(exerciseName, stage) {
+      if (!exerciseName) return;
+      localStorage.setItem(getExerciseProgressKey(exerciseName), String(stage));
     }
 
     function saveExerciseHistory(exerciseName, weight, reps) {
@@ -386,35 +171,61 @@
       return saved ? JSON.parse(saved) : null;
     }
 
-    function getCoachingPrompt(exerciseName, repsValue, week) {
-      const target = getTargetReps(week);
+    function applyProgressionResult(exerciseName, repsValue) {
+      if (!exerciseName) return;
+      const reps = Number(repsValue);
+      if (!reps) return;
+      const currentStage = getProgressStage(exerciseName);
+      const currentTarget = progressionTargets[currentStage];
+      if (reps >= currentTarget) {
+        if (currentStage < 2) setProgressStage(exerciseName, currentStage + 1);
+        else setProgressStage(exerciseName, 0);
+      }
+    }
+
+    function getCoachingPrompt(exerciseName, repsValue) {
       if (!exerciseName) return "Choose an exercise to get coaching guidance.";
-      const numericReps = Number(repsValue);
-      if (!numericReps) return `Aim for ${target} reps this week.`;
-      if (numericReps >= 12) return "You hit 12 reps. Increase weight next time.";
-      if (numericReps >= 10 && target === 10) return "Great. Next phase is 12 reps.";
-      if (numericReps >= 10 && target === 8) return "You are above target. Increase weight if form feels strong.";
-      if (numericReps >= 8 && target === 8) return "Good. Stay here or build slightly if form feels solid.";
-      if (numericReps >= target) return "On target. Keep building steadily.";
-      return `Stay with this weight until you can hit ${target} reps.`;
+      const reps = Number(repsValue);
+      const stage = getProgressStage(exerciseName);
+      const target = progressionTargets[stage];
+
+      if (!reps) {
+        if (target === 8) return "Next target is 8 reps at this weight.";
+        if (target === 10) return "You hit 8 before. Now aim for 10 reps.";
+        return "You hit 10 before. Now aim for 12 reps.";
+      }
+      if (reps >= 12) return "Excellent. Increase the weight next time and restart at 8 reps.";
+      if (target === 8 && reps >= 8) return "Great. You hit 8 reps. Next time aim for 10.";
+      if (target === 10 && reps >= 10) return "Great. You hit 10 reps. Next time aim for 12.";
+      if (target === 12 && reps >= 12) return "Great. You hit 12 reps. Increase weight next time.";
+      return `Stay at this weight until you hit ${target} reps cleanly.`;
+    }
+
+    function renderProgressStrip(dayIndex, supersetIndex, exerciseIndex, stage) {
+      const container = document.getElementById(`progress-strip-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+      if (!container) return;
+      container.innerHTML = "";
+      progressionTargets.forEach((target, idx) => {
+        const chip = document.createElement("div");
+        chip.className = "progress-chip" + (idx === stage ? " active" : "");
+        chip.textContent = `${target} reps`;
+        container.appendChild(chip);
+      });
     }
 
     function createDropdown(dayIndex, supersetIndex, exerciseIndex) {
       const select = document.createElement("select");
       select.id = `day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`;
-
       const defaultOption = document.createElement("option");
       defaultOption.value = "";
       defaultOption.textContent = "Select exercise";
       select.appendChild(defaultOption);
-
       exerciseOptions.forEach(exercise => {
         const option = document.createElement("option");
         option.value = exercise;
         option.textContent = exercise;
         select.appendChild(option);
       });
-
       select.addEventListener("change", () => updateExerciseMeta(dayIndex, supersetIndex, exerciseIndex));
       return select;
     }
@@ -429,7 +240,6 @@
     }
 
     function updateExerciseMeta(dayIndex, supersetIndex, exerciseIndex) {
-      const week = getWeek();
       const nameEl = document.getElementById(`day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`);
       const repsEl = document.getElementById(`day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-reps`);
       const historyEl = document.getElementById(`history-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
@@ -439,21 +249,21 @@
       const exerciseName = nameEl.value;
       const repsValue = repsEl.value;
       const history = getExerciseHistory(exerciseName);
+      const stage = getProgressStage(exerciseName);
 
       historyEl.textContent = history
         ? `Last workout: ${history.weight || "-"} kg, ${history.reps || "-"} reps on ${history.date}`
         : "Last workout: none yet";
 
-      coachingEl.textContent = getCoachingPrompt(exerciseName, repsValue, week);
+      renderProgressStrip(dayIndex, supersetIndex, exerciseIndex, stage);
+      coachingEl.textContent = getCoachingPrompt(exerciseName, repsValue);
     }
 
     function updateSupersetCompleteState(dayIndex, supersetIndex) {
       const week = getWeek();
       let allDone = true;
       for (let r = 0; r < roundsPerSuperset; r++) {
-        if (localStorage.getItem(getRoundStorageKey(week, dayIndex, supersetIndex, r)) !== "true") {
-          allDone = false;
-        }
+        if (localStorage.getItem(getRoundStorageKey(week, dayIndex, supersetIndex, r)) !== "true") allDone = false;
       }
       localStorage.setItem(getCompleteStorageKey(week, dayIndex, supersetIndex), allDone);
       const btn = document.getElementById(`complete-btn-${dayIndex}-${supersetIndex}`);
@@ -476,10 +286,8 @@
       const current = localStorage.getItem(key) === "true";
       const next = !current;
       localStorage.setItem(key, next);
-
       const btn = document.getElementById(`round-btn-${dayIndex}-${supersetIndex}-${roundIndex}`);
       if (btn) btn.classList.toggle("done", next);
-
       updateSupersetCompleteState(dayIndex, supersetIndex);
     }
 
@@ -497,21 +305,18 @@
     function saveDay(dayIndex) {
       const week = getWeek();
       const dayData = [];
-
       for (let s = 0; s < supersetsPerDay; s++) {
         const supersetData = [];
-
         for (let e = 0; e < exercisesPerSuperset; e++) {
           const exerciseName = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-name`).value;
           const weight = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-weight`).value;
           const reps = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-reps`).value;
           supersetData.push({ exerciseName, weight, reps });
           saveExerciseHistory(exerciseName, weight, reps);
+          applyProgressionResult(exerciseName, reps);
         }
-
         dayData.push(supersetData);
       }
-
       localStorage.setItem(getDayStorageKey(week, dayIndex), JSON.stringify(dayData));
 
       const savedMessage = document.getElementById(`saved-message-${dayIndex}`);
@@ -532,14 +337,12 @@
       const week = getWeek();
       const saved = localStorage.getItem(getDayStorageKey(week, dayIndex));
       if (!saved) return;
-
       const dayData = JSON.parse(saved);
       dayData.forEach((superset, s) => {
         superset.forEach((exercise, e) => {
           const nameEl = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-name`);
           const weightEl = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-weight`);
           const repsEl = document.getElementById(`day-${dayIndex}-ss-${s}-ex-${e}-reps`);
-
           if (nameEl) nameEl.value = exercise.exerciseName || "";
           if (weightEl) weightEl.value = exercise.weight || "";
           if (repsEl) repsEl.value = exercise.reps || "";
@@ -569,9 +372,6 @@
     }
 
     function renderApp() {
-      const week = getWeek();
-      const target = getTargetReps(week);
-      document.getElementById("repTarget").textContent = target;
       app.innerHTML = "";
       renderTabs();
 
@@ -588,7 +388,7 @@
           <div class="day-accent ${accents[dayIndex]}"></div>
           <div>
             <h2 class="day-title">${dayName}</h2>
-            <div class="day-subtitle">Week ${week} • Target ${target} reps</div>
+            <div class="day-subtitle">Progress each exercise through 8 → 10 → 12 reps</div>
           </div>
         `;
         dayCard.appendChild(dayHeader);
@@ -615,7 +415,7 @@
 
           const roundsBox = document.createElement("div");
           roundsBox.className = "rounds-box";
-          roundsBox.innerHTML = `<div class="rounds-title">Complete these same steps 3 times:</div>`;
+          roundsBox.innerHTML = `<div class="rounds-title">Your set structure is 8 reps, then 10 reps, then 12 reps.</div>`;
           const roundsButtons = document.createElement("div");
           roundsButtons.className = "round-buttons";
 
@@ -647,11 +447,15 @@
 
             const dropdown = createDropdown(dayIndex, s, e);
             const weightInput = createInput(`day-${dayIndex}-ss-${s}-ex-${e}-weight`, "Weight", dayIndex, s, e);
-            const repsInput = createInput(`day-${dayIndex}-ss-${s}-ex-${e}-reps`, `Target ${target}`, dayIndex, s, e);
+            const repsInput = createInput(`day-${dayIndex}-ss-${s}-ex-${e}-reps`, "Reps achieved", dayIndex, s, e);
 
             row.appendChild(dropdown);
             row.appendChild(weightInput);
             row.appendChild(repsInput);
+
+            const strip = document.createElement("div");
+            strip.className = "progress-strip";
+            strip.id = `progress-strip-${dayIndex}-${s}-${e}`;
 
             const history = document.createElement("div");
             history.className = "history";
@@ -664,6 +468,7 @@
             coaching.textContent = "Choose an exercise to get coaching guidance.";
 
             block.appendChild(row);
+            block.appendChild(strip);
             block.appendChild(history);
             block.appendChild(coaching);
             superset.appendChild(block);
@@ -691,9 +496,7 @@
         loadDay(dayIndex);
         for (let s = 0; s < supersetsPerDay; s++) {
           loadRoundState(dayIndex, s);
-          for (let e = 0; e < exercisesPerSuperset; e++) {
-            updateExerciseMeta(dayIndex, s, e);
-          }
+          for (let e = 0; e < exercisesPerSuperset; e++) updateExerciseMeta(dayIndex, s, e);
         }
       });
 
@@ -730,8 +533,7 @@
     function updateWorkoutDisplay() {
       const mins = Math.floor(totalSeconds / 60);
       const secs = totalSeconds % 60;
-      document.getElementById("timer").textContent =
-        `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+      document.getElementById("timer").textContent = `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
     }
 
     updateWorkoutDisplay();
