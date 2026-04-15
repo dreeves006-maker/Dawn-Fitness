@@ -1,228 +1,739 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6 Week Fit Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Fit Coach</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #0f172a;
+      color: white;
+      padding-bottom: 90px;
+    }
 
-<style>
-body {
-  font-family: Arial;
-  margin: 0;
-  background: #0f172a;
-  color: white;
-}
+    header {
+      background: #22c55e;
+      padding: 16px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
 
-header {
-  background: #22c55e;
-  padding: 15px;
-  text-align: center;
-  font-size: 22px;
-}
+    .subhead {
+      font-size: 14px;
+      font-weight: normal;
+      margin-top: 6px;
+    }
 
-.container {
-  padding: 15px;
-}
+    .week-bar {
+      margin-top: 10px;
+    }
 
-select, input {
-  padding: 8px;
-  border-radius: 6px;
-  border: none;
-}
+    .week-bar select {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+    }
 
-.day {
-  background: #1e293b;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
+    .container {
+      padding: 16px;
+      max-width: 1000px;
+      margin: auto;
+    }
 
-.superset {
-  background: #0f172a;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
+    .tip-box {
+      background: #1d4ed8;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
 
-.exercise-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 6px;
-  margin-bottom: 6px;
-}
+    .coach-box {
+      background: #14532d;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
 
-.save-btn {
-  background: #22c55e;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  width: 100%;
-  margin-top: 10px;
-  font-weight: bold;
-}
+    .day {
+      margin-bottom: 28px;
+      padding: 16px;
+      background: #1e293b;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
 
-.timer-bar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #22c55e;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-}
+    .day h2 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      font-size: 24px;
+    }
 
-.timer-buttons button {
-  margin-left: 5px;
-}
+    .superset {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
 
-.progression {
-  font-size: 12px;
-  color: #86efac;
-}
+    .superset-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
 
-</style>
-</head>
+    .superset h3 {
+      margin: 0;
+      color: #22c55e;
+      font-size: 18px;
+    }
 
-<body>
+    .exercise-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
 
-<header>
-💪 6 Week Programme
-<br>
-<select id="weekSelect" onchange="renderApp()">
-  <option value="1">Week 1</option>
-  <option value="2">Week 2</option>
-  <option value="3">Week 3</option>
-  <option value="4">Week 4</option>
-  <option value="5">Week 5</option>
-  <option value="6">Week 6</option>
-</select>
-</header>
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
 
-<div class="container" id="app"></div>
+    .history {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 4px 0 8px 0;
+      background: #1e293b;
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
 
-<div class="timer-bar">
-  <div id="timer">60s</div>
-  <div class="timer-buttons">
-    <button onclick="startTimer(60)">60</button>
-    <button onclick="startTimer(90)">90</button>
-    <button onclick="startTimer(120)">120</button>
-    <button onclick="resetTimer()">Reset</button>
-  </div>
-</div>
+    .coach-note {
+      font-size: 13px;
+      color: #dcfce7;
+      margin: 0 0 12px 0;
+      background: #166534;
+      padding: 10px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
 
-<script>
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
 
-const exercises = [
-"Squat","RDL","Lunge","Hip Thrust","Step Ups",
-"Push Ups","DB Press","Incline Press",
-"Shoulder Press","Arnold Press","Lateral Raise",
-"Row","One Arm Row","Pull Over",
-"Bicep Curl","Hammer Curl",
-"Tricep Extension","Kickback",
-"Plank","Dead Bug","Russian Twist"
-];
+    .save-btn, .small-btn {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
 
-const days = ["Day 1","Day 2","Day 3","Day 4"];
+    .small-btn {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
 
-function getTargetReps(week){
-  if(week == 1 || week == 2) return 8;
-  if(week == 3 || week == 4) return 10;
-  return 12;
-}
+    .complete-btn.done {
+      background: #16a34a;
+    }
 
-function renderApp(){
+    .saved-message {
+      margin-top: 10px;
+      color: #86efac;
+      font-size: 14px;
+      display: none;
+    }
 
-  const app = document.getElementById("app");
-  app.innerHTML = "";
+    .timer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #22c55e;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      box-sizing: border-box;
+      gap: 10px;
+    }
 
-  const week = document.getElementById("weekSelect").value;
-  const target = getTargetReps(week);
+    .timer-display {
+      font-size: 20px;
+      font-weight: bold;
+      min-width: 60px;
+    }
 
-  days.forEach((day, d)=>{
+    .timer-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
 
-    const dayDiv = document.createElement("div");
-    dayDiv.className = "day";
+    .timer-buttons button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: white;
+      color: #22c55e;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-    dayDiv.innerHTML = `<h3>${day} - Target: ${target} reps</h3>`;
-
-    for(let s=0; s<5; s++){
-
-      const ss = document.createElement("div");
-      ss.className = "superset";
-
-      ss.innerHTML = `<strong>Superset ${s+1}</strong>`;
-
-      for(let e=0; e<2; e++){
-
-        const row = document.createElement("div");
-        row.className = "exercise-row";
-
-        const select = document.createElement("select");
-        exercises.forEach(ex=>{
-          const opt = document.createElement("option");
-          opt.value = ex;
-          opt.textContent = ex;
-          select.appendChild(opt);
-        });
-
-        const weight = document.createElement("input");
-        weight.placeholder = "kg";
-
-        const reps = document.createElement("input");
-        reps.placeholder = target;
-
-        row.appendChild(select);
-        row.appendChild(weight);
-        row.appendChild(reps);
-
-        ss.appendChild(row);
+    @media (max-width: 700px) {
+      .exercise-row {
+        grid-template-columns: 1fr;
       }
 
-      dayDiv.appendChild(ss);
+      header {
+        font-size: 22px;
+      }
+
+      .day h2 {
+        font-size: 20px;
+      }
+
+      .timer-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .timer-display {
+        text-align: center;
+      }
+
+      .timer-buttons {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    💪 My Fit Coach
+    <div class="subhead">6-week plan • 4 days per week • 5 supersets • coaching prompts built in</div>
+    <div class="week-bar">
+      <select id="weekSelect" onchange="changeWeek()">
+        <option value="1">Week 1</option>
+        <option value="2">Week 2</option>
+        <option value="3">Week 3</option>
+        <option value="4">Week 4</option>
+        <option value="5">Week 5</option>
+        <option value="6">Week 6</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tip-box" id="week-summary">
+      Loading week guidance...
+    </div>
+
+    <div class="coach-box" id="coach-summary">
+      Loading coach guidance...
+    </div>
+
+    <div id="app"></div>
+  </div>
+
+  <div class="timer-bar">
+    <div class="timer-display" id="timer">60s</div>
+    <div class="timer-buttons">
+      <button onclick="startTimer(60)">60s</button>
+      <button onclick="startTimer(90)">90s</button>
+      <button onclick="startTimer(120)">2m</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    const exerciseOptions = [
+      "Goblet Squat",
+      "DB Romanian Deadlift",
+      "DB Deadlift",
+      "Reverse Lunge",
+      "Walking Lunge",
+      "Step Ups",
+      "Glute Bridge",
+      "Hip Thrust",
+      "Bulgarian Split Squat",
+      "Push Ups",
+      "Incline Push Ups",
+      "DB Chest Press",
+      "DB Floor Press",
+      "Incline DB Press",
+      "Shoulder Press",
+      "Arnold Press",
+      "Lateral Raise",
+      "Front Raise",
+      "Bent Over Row",
+      "One Arm Row",
+      "Renegade Row",
+      "Upright Row",
+      "Chest Supported Row",
+      "Pull Over",
+      "Bicep Curl",
+      "Hammer Curl",
+      "Tricep Kickback",
+      "Overhead Tricep Extension",
+      "Plank",
+      "Side Plank",
+      "Dead Bug",
+      "Bird Dog",
+      "Russian Twist",
+      "Mountain Climbers",
+      "Leg Raises",
+      "Sit Ups"
+    ];
+
+    const days = ["Day 1", "Day 2", "Day 3", "Day 4"];
+    const supersetsPerDay = 5;
+    const exercisesPerSuperset = 2;
+    const app = document.getElementById("app");
+
+    function getCurrentWeek() {
+      return Number(document.getElementById("weekSelect").value);
     }
 
-    const save = document.createElement("button");
-    save.className = "save-btn";
-    save.innerText = "Save Day";
-
-    save.onclick = ()=>{
-      localStorage.setItem(`week${week}-day${d}`, dayDiv.innerHTML);
-      alert("Saved");
-    };
-
-    dayDiv.appendChild(save);
-    app.appendChild(dayDiv);
-  });
-
-}
-
-renderApp();
-
-let timer;
-let timeLeft = 60;
-
-function startTimer(sec){
-  clearInterval(timer);
-  timeLeft = sec;
-
-  timer = setInterval(()=>{
-    timeLeft--;
-    document.getElementById("timer").innerText = timeLeft + "s";
-
-    if(timeLeft<=0){
-      clearInterval(timer);
-      alert("Rest done");
+    function getTargetReps(week) {
+      if (week === 1 || week === 2) return 8;
+      if (week === 3 || week === 4) return 10;
+      return 12;
     }
-  },1000);
-}
 
-function resetTimer(){
-  clearInterval(timer);
-  timeLeft = 60;
-  document.getElementById("timer").innerText = "60s";
-}
+    function getWeekFocus(week) {
+      if (week === 1) return "Start steady. Learn the exercises, keep good form, and hit around 8 reps.";
+      if (week === 2) return "Stay with the same weights if needed and try to hit 8 reps more confidently.";
+      if (week === 3) return "Aim for 10 reps where form stays strong. Do not rush the tempo.";
+      if (week === 4) return "Consolidate 10 reps. Try to make the work feel smoother and stronger.";
+      if (week === 5) return "Push toward 12 reps with control. If you hit 12 cleanly, get ready to increase weight.";
+      return "Finish strong at 12 reps. If 12 feels solid, increase weight next time you repeat the programme.";
+    }
 
-</script>
+    function storageKey(week, dayIndex) {
+      return `fitCoach-week${week}-day${dayIndex}`;
+    }
 
+    function completionKey(week, dayIndex, supersetIndex) {
+      return `fitCoach-complete-week${week}-day${dayIndex}-ss${supersetIndex}`;
+    }
+
+    function historyKey(exerciseName) {
+      return `fitCoach-history-${exerciseName}`;
+    }
+
+    function createDropdown(week, dayIndex, supersetIndex, exerciseIndex) {
+      const select = document.createElement("select");
+      select.id = `week-${week}-day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`;
+
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "Select exercise";
+      select.appendChild(defaultOption);
+
+      exerciseOptions.forEach(exercise => {
+        const option = document.createElement("option");
+        option.value = exercise;
+        option.textContent = exercise;
+        select.appendChild(option);
+      });
+
+      select.addEventListener("change", () => updateExerciseFeedback(week, dayIndex, supersetIndex, exerciseIndex));
+      return select;
+    }
+
+    function createInput(type, placeholder, id, week, dayIndex, supersetIndex, exerciseIndex) {
+      const input = document.createElement("input");
+      input.type = type;
+      input.placeholder = placeholder;
+      input.id = id;
+      input.addEventListener("input", () => updateExerciseFeedback(week, dayIndex, supersetIndex, exerciseIndex));
+      return input;
+    }
+
+    function getExerciseHistory(exerciseName) {
+      if (!exerciseName) return [];
+      const saved = localStorage.getItem(historyKey(exerciseName));
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    function saveExerciseHistory(exerciseName, weight, reps, week) {
+      if (!exerciseName) return;
+
+      const history = getExerciseHistory(exerciseName);
+      history.push({
+        weight: weight || "",
+        reps: Number(reps) || "",
+        week: week,
+        date: new Date().toLocaleDateString()
+      });
+
+      localStorage.setItem(historyKey(exerciseName), JSON.stringify(history));
+    }
+
+    function getLastExerciseLog(exerciseName) {
+      const history = getExerciseHistory(exerciseName);
+      if (!history.length) return null;
+      return history[history.length - 1];
+    }
+
+    function getCoachMessage(exerciseName, weight, reps, targetReps, week) {
+      if (!exerciseName) {
+        return "Choose an exercise to get coaching guidance.";
+      }
+
+      const repsNum = Number(reps);
+      const last = getLastExerciseLog(exerciseName);
+
+      if (!last && !repsNum) {
+        return `This week your target is ${targetReps} reps. Start with a weight you can control with good form.`;
+      }
+
+      if (!repsNum) {
+        if (last) {
+          if (Number(last.reps) >= 12) {
+            return `Last time you got ${last.reps} reps. Increase weight if form was strong.`;
+          }
+          if (Number(last.reps) >= 10) {
+            return `Last time you got ${last.reps} reps. Try to build toward 12.`;
+          }
+          if (Number(last.reps) >= 8) {
+            return `Last time you got ${last.reps} reps. Try to add reps with the same weight.`;
+          }
+        }
+        return `Aim for ${targetReps} reps this week. Keep the movement controlled.`;
+      }
+
+      if (repsNum < targetReps) {
+        return `You are under the target of ${targetReps}. Keep the same weight next time and build the reps first.`;
+      }
+
+      if (repsNum === targetReps) {
+        if (week <= 4) {
+          return `Nice work. You hit the target of ${targetReps}. Repeat this well before increasing load.`;
+        }
+        return `Great. You hit ${targetReps}. If that felt solid, you can increase weight next time.`;
+      }
+
+      if (repsNum > targetReps) {
+        return `You exceeded the target. That usually means you are ready to increase weight slightly next time.`;
+      }
+
+      return `Aim for ${targetReps} reps this week.`;
+    }
+
+    function updateExerciseFeedback(week, dayIndex, supersetIndex, exerciseIndex) {
+      const nameEl = document.getElementById(`week-${week}-day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`);
+      const weightEl = document.getElementById(`week-${week}-day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-weight`);
+      const repsEl = document.getElementById(`week-${week}-day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-reps`);
+      const historyEl = document.getElementById(`history-${week}-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+      const coachEl = document.getElementById(`coach-${week}-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+
+      if (!nameEl || !weightEl || !repsEl || !historyEl || !coachEl) return;
+
+      const exerciseName = nameEl.value;
+      const weight = weightEl.value;
+      const reps = repsEl.value;
+      const targetReps = getTargetReps(week);
+      const last = getLastExerciseLog(exerciseName);
+
+      if (last) {
+        historyEl.textContent = `Last workout: ${last.weight || "-"} kg, ${last.reps || "-"} reps, week ${last.week}, ${last.date}`;
+      } else {
+        historyEl.textContent = "Last workout: none yet";
+      }
+
+      coachEl.textContent = getCoachMessage(exerciseName, weight, reps, targetReps, week);
+    }
+
+    function toggleComplete(week, dayIndex, supersetIndex) {
+      const key = completionKey(week, dayIndex, supersetIndex);
+      const current = localStorage.getItem(key) === "true";
+      const newValue = !current;
+      localStorage.setItem(key, newValue);
+
+      const button = document.getElementById(`complete-btn-${week}-${dayIndex}-${supersetIndex}`);
+      button.textContent = newValue ? "Completed ✓" : "Mark Complete";
+      button.classList.toggle("done", newValue);
+    }
+
+    function loadCompleteState(week, dayIndex, supersetIndex) {
+      const isDone = localStorage.getItem(completionKey(week, dayIndex, supersetIndex)) === "true";
+      const button = document.getElementById(`complete-btn-${week}-${dayIndex}-${supersetIndex}`);
+      if (button && isDone) {
+        button.textContent = "Completed ✓";
+        button.classList.add("done");
+      }
+    }
+
+    function saveDay(dayIndex) {
+      const week = getCurrentWeek();
+      const dayData = [];
+
+      for (let s = 0; s < supersetsPerDay; s++) {
+        const supersetData = [];
+
+        for (let e = 0; e < exercisesPerSuperset; e++) {
+          const exerciseName = document.getElementById(`week-${week}-day-${dayIndex}-ss-${s}-ex-${e}-name`).value;
+          const weight = document.getElementById(`week-${week}-day-${dayIndex}-ss-${s}-ex-${e}-weight`).value;
+          const reps = document.getElementById(`week-${week}-day-${dayIndex}-ss-${s}-ex-${e}-reps`).value;
+
+          supersetData.push({
+            exerciseName,
+            weight,
+            reps
+          });
+
+          if (exerciseName && reps) {
+            saveExerciseHistory(exerciseName, weight, reps, week);
+          }
+        }
+
+        dayData.push(supersetData);
+      }
+
+      localStorage.setItem(storageKey(week, dayIndex), JSON.stringify(dayData));
+
+      const savedMessage = document.getElementById(`saved-message-${week}-${dayIndex}`);
+      savedMessage.style.display = "block";
+      savedMessage.textContent = `Saved week ${week}, ${days[dayIndex]}`;
+
+      setTimeout(() => {
+        savedMessage.style.display = "none";
+      }, 2000);
+
+      for (let s = 0; s < supersetsPerDay; s++) {
+        for (let e = 0; e < exercisesPerSuperset; e++) {
+          updateExerciseFeedback(week, dayIndex, s, e);
+        }
+      }
+
+      updateCoachSummary();
+    }
+
+    function loadDay(week, dayIndex) {
+      const saved = localStorage.getItem(storageKey(week, dayIndex));
+      if (!saved) return;
+
+      const dayData = JSON.parse(saved);
+
+      dayData.forEach((superset, s) => {
+        superset.forEach((exercise, e) => {
+          const nameEl = document.getElementById(`week-${week}-day-${dayIndex}-ss-${s}-ex-${e}-name`);
+          const weightEl = document.getElementById(`week-${week}-day-${dayIndex}-ss-${s}-ex-${e}-weight`);
+          const repsEl = document.getElementById(`week-${week}-day-${dayIndex}-ss-${s}-ex-${e}-reps`);
+
+          if (nameEl) nameEl.value = exercise.exerciseName || "";
+          if (weightEl) weightEl.value = exercise.weight || "";
+          if (repsEl) repsEl.value = exercise.reps || "";
+
+          updateExerciseFeedback(week, dayIndex, s, e);
+        });
+      });
+    }
+
+    function updateWeekSummary() {
+      const week = getCurrentWeek();
+      const target = getTargetReps(week);
+      const focus = getWeekFocus(week);
+
+      document.getElementById("week-summary").textContent =
+        `Week ${week}: target ${target} reps. ${focus}`;
+    }
+
+    function updateCoachSummary() {
+      const week = getCurrentWeek();
+      const target = getTargetReps(week);
+
+      let readyToIncrease = 0;
+      let exerciseCount = 0;
+
+      exerciseOptions.forEach(exercise => {
+        const last = getLastExerciseLog(exercise);
+        if (last) {
+          exerciseCount++;
+          if (Number(last.reps) > target || Number(last.reps) >= 12) {
+            readyToIncrease++;
+          }
+        }
+      });
+
+      document.getElementById("coach-summary").textContent =
+        `Coach view: for week ${week}, aim for ${target} reps with strong form. ` +
+        `${readyToIncrease} exercises look ready for a weight increase based on your latest logs. ` +
+        `${exerciseCount} exercises have history saved.`;
+    }
+
+    function renderApp() {
+      const week = getCurrentWeek();
+      const target = getTargetReps(week);
+      app.innerHTML = "";
+
+      days.forEach((dayName, dayIndex) => {
+        const dayCard = document.createElement("div");
+        dayCard.className = "day";
+
+        const dayTitle = document.createElement("h2");
+        dayTitle.textContent = `${dayName} • Week ${week} • Target ${target} reps`;
+        dayCard.appendChild(dayTitle);
+
+        for (let s = 0; s < supersetsPerDay; s++) {
+          const supersetCard = document.createElement("div");
+          supersetCard.className = "superset";
+
+          const supersetHeader = document.createElement("div");
+          supersetHeader.className = "superset-header";
+
+          const supersetTitle = document.createElement("h3");
+          supersetTitle.textContent = `Superset ${s + 1}`;
+
+          const completeBtn = document.createElement("button");
+          completeBtn.className = "small-btn complete-btn";
+          completeBtn.id = `complete-btn-${week}-${dayIndex}-${s}`;
+          completeBtn.textContent = "Mark Complete";
+          completeBtn.onclick = () => toggleComplete(week, dayIndex, s);
+
+          supersetHeader.appendChild(supersetTitle);
+          supersetHeader.appendChild(completeBtn);
+          supersetCard.appendChild(supersetHeader);
+
+          for (let e = 0; e < exercisesPerSuperset; e++) {
+            const row = document.createElement("div");
+            row.className = "exercise-row";
+
+            const dropdown = createDropdown(week, dayIndex, s, e);
+            const weightInput = createInput(
+              "number",
+              "Weight",
+              `week-${week}-day-${dayIndex}-ss-${s}-ex-${e}-weight`,
+              week, dayIndex, s, e
+            );
+            const repsInput = createInput(
+              "number",
+              `Target ${target}`,
+              `week-${week}-day-${dayIndex}-ss-${s}-ex-${e}-reps`,
+              week, dayIndex, s, e
+            );
+
+            row.appendChild(dropdown);
+            row.appendChild(weightInput);
+            row.appendChild(repsInput);
+            supersetCard.appendChild(row);
+
+            const historyBox = document.createElement("div");
+            historyBox.className = "history";
+            historyBox.id = `history-${week}-${dayIndex}-${s}-${e}`;
+            historyBox.textContent = "Last workout: none yet";
+            supersetCard.appendChild(historyBox);
+
+            const coachNote = document.createElement("div");
+            coachNote.className = "coach-note";
+            coachNote.id = `coach-${week}-${dayIndex}-${s}-${e}`;
+            coachNote.textContent = `Coach says: aim for ${target} reps with good form.`;
+            supersetCard.appendChild(coachNote);
+          }
+
+          dayCard.appendChild(supersetCard);
+        }
+
+        const buttonRow = document.createElement("div");
+        buttonRow.className = "button-row";
+
+        const saveBtn = document.createElement("button");
+        saveBtn.className = "save-btn";
+        saveBtn.textContent = "Save Day";
+        saveBtn.onclick = () => saveDay(dayIndex);
+
+        buttonRow.appendChild(saveBtn);
+        dayCard.appendChild(buttonRow);
+
+        const savedMessage = document.createElement("div");
+        savedMessage.className = "saved-message";
+        savedMessage.id = `saved-message-${week}-${dayIndex}`;
+        dayCard.appendChild(savedMessage);
+
+        app.appendChild(dayCard);
+      });
+
+      days.forEach((_, dayIndex) => {
+        loadDay(week, dayIndex);
+        for (let s = 0; s < supersetsPerDay; s++) {
+          loadCompleteState(week, dayIndex, s);
+          for (let e = 0; e < exercisesPerSuperset; e++) {
+            updateExerciseFeedback(week, dayIndex, s, e);
+          }
+        }
+      });
+
+      updateWeekSummary();
+      updateCoachSummary();
+    }
+
+    function changeWeek() {
+      renderApp();
+    }
+
+    let timerInterval;
+    let timeLeft = 60;
+
+    function startTimer(seconds) {
+      clearInterval(timerInterval);
+      timeLeft = seconds;
+      updateDisplay();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateDisplay();
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          alert("Rest complete!");
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timeLeft = 60;
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById("timer").textContent = timeLeft + "s";
+    }
+
+    updateDisplay();
+    renderApp();
+  </script>
 </body>
 </html>
