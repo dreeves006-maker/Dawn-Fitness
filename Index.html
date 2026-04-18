@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dawn Fitness</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+header {
+  background: #22c55e;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.container {
+  padding: 15px;
+}
+
+select, input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin: 5px 0;
+  width: 100%;
+}
+
+.day {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.superset {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  background: #22c55e;
+  color: white;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+💪 Dawn Fitness
+</header>
+
+<div class="container">
+
+<label>Select Week</label>
+<select id="week">
+<option>Week 1</option>
+<option>Week 2</option>
+<option>Week 3</option>
+<option>Week 4</option>
+<option>Week 5</option>
+<option>Week 6</option>
+</select>
+
+<div id="app"></div>
+
+</div>
+
+<script>
+const exercises = [
+"Goblet Squat","Deadlift","Push Ups","Rows","Shoulder Press",
+"Kettlebell Swing","Kettlebell Squat","Kettlebell Press",
+"Other","Free Entry"
+];
+
+const app = document.getElementById("app");
+
+function createExercise() {
+  let html = "<select>";
+  exercises.forEach(e => {
+    html += `<option>${e}</option>`;
+  });
+  html += "</select>";
+
+  for(let i=1;i<=3;i++){
+    html += `
+    <input placeholder="Set ${i} Weight">
+    <input placeholder="Set ${i} Reps (8 / 10 / 12)">
+    `;
+  }
+
+  return html;
+}
+
+function createSuperset() {
+  return `
+  <div class="superset">
+    <h4>Superset</h4>
+    ${createExercise()}
+    ${createExercise()}
+  </div>
+  `;
+}
+
+function createDay(day) {
+  let html = `<div class="day"><h3>${day}</h3>`;
+
+  for(let i=0;i<5;i++){
+    html += createSuperset();
+  }
+
+  html += `<button onclick="nextDay()">Complete Day</button>`;
+  html += "</div>";
+
+  return html;
+}
+
+function render() {
+  app.innerHTML = "";
+  app.innerHTML += createDay("Day 1");
+}
+
+function nextDay(){
+  app.innerHTML = createDay("Next Day");
+}
+
+render();
+</script>
+
+</body>
+</html>
