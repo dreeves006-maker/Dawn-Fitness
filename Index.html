@@ -1,145 +1,1070 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dawn Fitness</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dawn Fitness</title>
+  <meta name="theme-color" content="#22c55e" />
+  <style>
+    * { box-sizing: border-box; }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
-}
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #0f172a;
+      color: white;
+      padding-bottom: 100px;
+    }
 
-header {
-  background: #22c55e;
-  padding: 15px;
-  text-align: center;
-  font-weight: bold;
-}
+    header {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      padding: 16px 14px 12px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
 
-.container {
-  padding: 15px;
-}
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: 0.3px;
+    }
 
-select, input {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin: 5px 0;
-  width: 100%;
-}
+    .subhead {
+      margin-top: 4px;
+      font-size: 13px;
+      opacity: 0.95;
+    }
 
-.day {
-  background: #1e293b;
-  padding: 15px;
-  border-radius: 12px;
-  margin-bottom: 15px;
-}
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 14px;
+    }
 
-.superset {
-  background: #0f172a;
-  padding: 10px;
-  border-radius: 10px;
-  margin-top: 10px;
-}
+    .top-controls {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
 
-button {
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  margin-top: 10px;
-  background: #22c55e;
-  color: white;
-  font-weight: bold;
-}
-</style>
+    .top-controls-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .control-group select {
+      min-width: 140px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 11px 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    .week-summary {
+      font-size: 14px;
+      color: #cbd5e1;
+      padding: 11px 14px;
+      background: #111827;
+      border-radius: 12px;
+    }
+
+    .tip-box {
+      background: #1d4ed8;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+      position: sticky;
+      top: 90px;
+      z-index: 40;
+      background: #0f172a;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-weight: bold;
+      color: white;
+      background: #334155;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .tab-btn.active {
+      background: #22c55e;
+      color: white;
+      box-shadow: 0 4px 12px rgba(34,197,94,0.3);
+    }
+
+    .day-panel {
+      display: none;
+    }
+
+    .day-panel.active {
+      display: block;
+    }
+
+    .day-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+    }
+
+    .day-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .day-accent {
+      width: 14px;
+      height: 54px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .accent-1 { background: #22c55e; }
+    .accent-2 { background: #38bdf8; }
+    .accent-3 { background: #f59e0b; }
+    .accent-4 { background: #f472b6; }
+
+    .day-title {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .day-subtitle {
+      margin-top: 4px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .superset {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+
+    .superset-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .superset-title {
+      margin: 0;
+      font-size: 18px;
+      color: #86efac;
+    }
+
+    .complete-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: #334155;
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .complete-btn.done {
+      background: #16a34a;
+    }
+
+    .superset-note {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 9px 10px;
+    }
+
+    .exercise-block {
+      margin-bottom: 16px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+    }
+
+    .exercise-row {
+      display: grid;
+      grid-template-columns: 2fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .progress-strip {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .progress-chip {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .progress-chip.active {
+      background: #22c55e;
+      color: white;
+      border-color: #22c55e;
+      font-weight: bold;
+    }
+
+    .set-grid {
+      display: grid;
+      grid-template-columns: 100px 1fr 1fr 70px;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .set-label {
+      font-size: 13px;
+      color: #cbd5e1;
+      font-weight: bold;
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .set-check {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #334155;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .set-check.done {
+      background: #22c55e;
+      color: white;
+    }
+
+    .history, .coaching {
+      font-size: 13px;
+      line-height: 1.4;
+      border-radius: 10px;
+      padding: 9px 10px;
+      margin-top: 8px;
+    }
+
+    .history {
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+
+    .coaching {
+      background: rgba(34, 197, 94, 0.12);
+      color: #86efac;
+      font-weight: bold;
+    }
+
+    .custom-wrap {
+      margin-top: 8px;
+    }
+
+    .custom-wrap button {
+      margin-top: 8px;
+    }
+
+    .save-btn {
+      width: 100%;
+      margin-top: 16px;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 16px;
+      background: #22c55e;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .saved-message {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+      color: #86efac;
+      font-size: 14px;
+    }
+
+    .timer-bar {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background: #22c55e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 -4px 14px rgba(0,0,0,0.25);
+      z-index: 100;
+    }
+
+    .timer-display {
+      font-size: 24px;
+      font-weight: bold;
+      min-width: 84px;
+    }
+
+    .timer-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .timer-buttons button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: white;
+      color: #16a34a;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    @media (max-width: 700px) {
+      .tabs {
+        grid-template-columns: repeat(2, 1fr);
+        top: 86px;
+      }
+
+      .set-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .day-title {
+        font-size: 22px;
+      }
+
+      .timer-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .timer-display {
+        text-align: center;
+      }
+
+      .timer-buttons {
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <header>
+    <h1>💪 Dawn Fitness</h1>
+    <div class="subhead">6-week plan • 4 days • manual set tracking • learns your exercises</div>
+  </header>
 
-<header>
-💪 Dawn Fitness
-</header>
+  <div class="container">
+    <div class="top-controls">
+      <div class="top-controls-row">
+        <div class="control-group">
+          <label for="weekSelect">Select week</label>
+          <select id="weekSelect">
+            <option value="1">Week 1</option>
+            <option value="2">Week 2</option>
+            <option value="3">Week 3</option>
+            <option value="4">Week 4</option>
+            <option value="5">Week 5</option>
+            <option value="6">Week 6</option>
+          </select>
+        </div>
 
-<div class="container">
+        <div class="week-summary">
+          Progression: <strong>8 → 10 → 12</strong>
+        </div>
+      </div>
+    </div>
 
-<label>Select Week</label>
-<select id="week">
-<option>Week 1</option>
-<option>Week 2</option>
-<option>Week 3</option>
-<option>Week 4</option>
-<option>Week 5</option>
-<option>Week 6</option>
-</select>
+    <div class="tip-box">
+      Enter your exercises, weights, and reps for each set. The app remembers custom exercises, tracks progression, and moves you to the next day when you complete one.
+    </div>
 
-<div id="app"></div>
-
-</div>
-
-<script>
-const exercises = [
-"Goblet Squat","Deadlift","Push Ups","Rows","Shoulder Press",
-"Kettlebell Swing","Kettlebell Squat","Kettlebell Press",
-"Other","Free Entry"
-];
-
-const app = document.getElementById("app");
-
-function createExercise() {
-  let html = "<select>";
-  exercises.forEach(e => {
-    html += `<option>${e}</option>`;
-  });
-  html += "</select>";
-
-  for(let i=1;i<=3;i++){
-    html += `
-    <input placeholder="Set ${i} Weight">
-    <input placeholder="Set ${i} Reps (8 / 10 / 12)">
-    `;
-  }
-
-  return html;
-}
-
-function createSuperset() {
-  return `
-  <div class="superset">
-    <h4>Superset</h4>
-    ${createExercise()}
-    ${createExercise()}
+    <div class="tabs" id="dayTabs"></div>
+    <div id="app"></div>
   </div>
-  `;
-}
 
-function createDay(day) {
-  let html = `<div class="day"><h3>${day}</h3>`;
+  <div class="timer-bar">
+    <div class="timer-display" id="timer">00:00</div>
+    <div class="timer-buttons">
+      <button onclick="startWorkout()">Start</button>
+      <button onclick="pauseWorkout()">Pause</button>
+      <button onclick="resetWorkout()">Reset</button>
+    </div>
+  </div>
 
-  for(let i=0;i<5;i++){
-    html += createSuperset();
-  }
+  <script>
+    const baseExerciseOptions = [
+      "Goblet Squat",
+      "DB Romanian Deadlift",
+      "DB Deadlift",
+      "Reverse Lunge",
+      "Walking Lunge",
+      "Step Ups",
+      "Glute Bridge",
+      "Hip Thrust",
+      "Bulgarian Split Squat",
+      "Push Ups",
+      "Incline Push Ups",
+      "DB Chest Press",
+      "DB Floor Press",
+      "Incline DB Press",
+      "Shoulder Press",
+      "Arnold Press",
+      "Lateral Raise",
+      "Front Raise",
+      "Bent Over Row",
+      "One Arm Row",
+      "Renegade Row",
+      "Upright Row",
+      "Chest Supported Row",
+      "Pull Over",
+      "Bicep Curl",
+      "Hammer Curl",
+      "Tricep Kickback",
+      "Overhead Tricep Extension",
+      "Plank",
+      "Side Plank",
+      "Dead Bug",
+      "Bird Dog",
+      "Russian Twist",
+      "Mountain Climbers",
+      "Leg Raises",
+      "Sit Ups",
+      "Kettlebell Swing",
+      "Kettlebell Goblet Squat",
+      "Kettlebell Deadlift",
+      "Kettlebell Clean",
+      "Kettlebell Press",
+      "Kettlebell Snatch"
+    ];
 
-  html += `<button onclick="nextDay()">Complete Day</button>`;
-  html += "</div>";
+    const days = ["Day 1", "Day 2", "Day 3", "Day 4"];
+    const accents = ["accent-1", "accent-2", "accent-3", "accent-4"];
+    const supersetsPerDay = 5;
+    const exercisesPerSuperset = 2;
+    const setsPerExercise = 3;
+    const progressionTargets = [8, 10, 12];
+    const customExercisesKey = "dawnfitness-custom-exercises";
 
-  return html;
-}
+    let currentDayIndex = 0;
 
-function render() {
-  app.innerHTML = "";
-  app.innerHTML += createDay("Day 1");
-}
+    const app = document.getElementById("app");
+    const dayTabs = document.getElementById("dayTabs");
+    const weekSelect = document.getElementById("weekSelect");
 
-function nextDay(){
-  app.innerHTML = createDay("Next Day");
-}
+    function getWeek() {
+      return weekSelect.value;
+    }
 
-render();
-</script>
+    function getDayStorageKey(week, dayIndex) {
+      return `dawnfitness-week${week}-day${dayIndex}`;
+    }
 
+    function getSupersetCompleteKey(week, dayIndex, supersetIndex) {
+      return `dawnfitness-week${week}-day${dayIndex}-superset${supersetIndex}-complete`;
+    }
+
+    function getSetCompleteKey(week, dayIndex, supersetIndex, exerciseIndex, setIndex) {
+      return `dawnfitness-week${week}-day${dayIndex}-ss${supersetIndex}-ex${exerciseIndex}-set${setIndex}-done`;
+    }
+
+    function getExerciseHistoryKey(exerciseName) {
+      return `dawnfitness-history-${exerciseName}`;
+    }
+
+    function getExerciseProgressKey(exerciseName) {
+      return `dawnfitness-progress-${exerciseName}`;
+    }
+
+    function getCustomExercises() {
+      return JSON.parse(localStorage.getItem(customExercisesKey) || "[]");
+    }
+
+    function saveCustomExercise(name) {
+      if (!name) return;
+      const trimmed = name.trim();
+      if (!trimmed) return;
+
+      const existing = getCustomExercises();
+      const alreadyExists =
+        baseExerciseOptions.some(ex => ex.toLowerCase() === trimmed.toLowerCase()) ||
+        existing.some(ex => ex.toLowerCase() === trimmed.toLowerCase());
+
+      if (!alreadyExists) {
+        existing.push(trimmed);
+        existing.sort((a, b) => a.localeCompare(b));
+        localStorage.setItem(customExercisesKey, JSON.stringify(existing));
+      }
+    }
+
+    function getAllExerciseOptions() {
+      return [...baseExerciseOptions, ...getCustomExercises(), "Other", "Free Entry"];
+    }
+
+    function getProgressStage(exerciseName) {
+      if (!exerciseName) return 0;
+      const saved = localStorage.getItem(getExerciseProgressKey(exerciseName));
+      const stage = Number(saved);
+      if (Number.isNaN(stage)) return 0;
+      return Math.min(Math.max(stage, 0), 2);
+    }
+
+    function setProgressStage(exerciseName, stage) {
+      if (!exerciseName) return;
+      localStorage.setItem(getExerciseProgressKey(exerciseName), String(stage));
+    }
+
+    function saveExerciseHistory(exerciseName, weight, reps) {
+      if (!exerciseName) return;
+      const entry = {
+        weight: weight || "",
+        reps: reps || "",
+        date: new Date().toLocaleDateString()
+      };
+      localStorage.setItem(getExerciseHistoryKey(exerciseName), JSON.stringify(entry));
+    }
+
+    function getExerciseHistory(exerciseName) {
+      if (!exerciseName) return null;
+      const saved = localStorage.getItem(getExerciseHistoryKey(exerciseName));
+      return saved ? JSON.parse(saved) : null;
+    }
+
+    function applyProgressionResult(exerciseName, repsValue) {
+      if (!exerciseName) return;
+      const reps = Number(repsValue);
+      if (!reps) return;
+
+      const currentStage = getProgressStage(exerciseName);
+      const currentTarget = progressionTargets[currentStage];
+
+      if (reps >= currentTarget) {
+        if (currentStage < 2) {
+          setProgressStage(exerciseName, currentStage + 1);
+        } else {
+          setProgressStage(exerciseName, 0);
+        }
+      }
+    }
+
+    function getCoachingPrompt(exerciseName, repsValue) {
+      if (!exerciseName) return "Choose an exercise to get coaching guidance.";
+
+      const reps = Number(repsValue);
+      const stage = getProgressStage(exerciseName);
+      const target = progressionTargets[stage];
+
+      if (!reps) {
+        if (target === 8) return "Next target is 8 reps at this weight.";
+        if (target === 10) return "You hit 8 before. Now aim for 10 reps.";
+        return "You hit 10 before. Now aim for 12 reps.";
+      }
+
+      if (reps >= 12) return "Excellent. Increase the weight next time and restart at 8 reps.";
+      if (target === 8 && reps >= 8) return "Great. You hit 8 reps. Next time aim for 10.";
+      if (target === 10 && reps >= 10) return "Great. You hit 10 reps. Next time aim for 12.";
+      if (target === 12 && reps >= 12) return "Great. You hit 12 reps. Increase weight next time.";
+      return `Stay at this weight until you hit ${target} reps cleanly.`;
+    }
+
+    function renderProgressStrip(dayIndex, supersetIndex, exerciseIndex, stage) {
+      const container = document.getElementById(`progress-strip-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+      if (!container) return;
+
+      container.innerHTML = "";
+      progressionTargets.forEach((target, idx) => {
+        const chip = document.createElement("div");
+        chip.className = "progress-chip" + (idx === stage ? " active" : "");
+        chip.textContent = `${target} reps`;
+        container.appendChild(chip);
+      });
+    }
+
+    function createDropdown(dayIndex, supersetIndex, exerciseIndex) {
+      const select = document.createElement("select");
+      select.id = `day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`;
+
+      function populateOptions(selectedValue = "") {
+        select.innerHTML = "";
+
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Select exercise";
+        select.appendChild(defaultOption);
+
+        getAllExerciseOptions().forEach(exercise => {
+          const option = document.createElement("option");
+          option.value = exercise;
+          option.textContent = exercise;
+          if (exercise === selectedValue) option.selected = true;
+          select.appendChild(option);
+        });
+      }
+
+      populateOptions();
+
+      select.addEventListener("change", () => {
+        handleFreeEntry(dayIndex, supersetIndex, exerciseIndex, populateOptions);
+        updateExerciseMeta(dayIndex, supersetIndex, exerciseIndex);
+      });
+
+      return select;
+    }
+
+    function handleFreeEntry(dayIndex, supersetIndex, exerciseIndex, refreshDropdown) {
+      const select = document.getElementById(`day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`);
+      const container = document.getElementById(`custom-wrap-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+      if (!select || !container) return;
+
+      container.innerHTML = "";
+
+      if (select.value === "Free Entry") {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Type exercise name";
+
+        const saveBtn = document.createElement("button");
+        saveBtn.textContent = "Save Exercise";
+        saveBtn.className = "complete-btn";
+
+        saveBtn.onclick = () => {
+          const customName = input.value.trim();
+          if (!customName) return;
+
+          saveCustomExercise(customName);
+          refreshDropdown(customName);
+          select.value = customName;
+          container.innerHTML = "";
+          updateExerciseMeta(dayIndex, supersetIndex, exerciseIndex);
+        };
+
+        container.appendChild(input);
+        container.appendChild(saveBtn);
+      }
+    }
+
+    function createInput(id, placeholder, onUpdate) {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.id = id;
+      input.placeholder = placeholder;
+      input.addEventListener("input", onUpdate);
+      return input;
+    }
+
+    function toggleSetComplete(dayIndex, supersetIndex, exerciseIndex, setIndex) {
+      const week = getWeek();
+      const key = getSetCompleteKey(week, dayIndex, supersetIndex, exerciseIndex, setIndex);
+      const current = localStorage.getItem(key) === "true";
+      const next = !current;
+      localStorage.setItem(key, next);
+
+      const btn = document.getElementById(`set-check-${dayIndex}-${supersetIndex}-${exerciseIndex}-${setIndex}`);
+      if (btn) btn.classList.toggle("done", next);
+
+      updateSupersetCompleteState(dayIndex, supersetIndex);
+    }
+
+    function loadSetCompleteState(dayIndex, supersetIndex, exerciseIndex, setIndex) {
+      const week = getWeek();
+      const key = getSetCompleteKey(week, dayIndex, supersetIndex, exerciseIndex, setIndex);
+      const done = localStorage.getItem(key) === "true";
+      const btn = document.getElementById(`set-check-${dayIndex}-${supersetIndex}-${exerciseIndex}-${setIndex}`);
+      if (btn) btn.classList.toggle("done", done);
+    }
+
+    function updateSupersetCompleteState(dayIndex, supersetIndex) {
+      const week = getWeek();
+      let allDone = true;
+
+      for (let e = 0; e < exercisesPerSuperset; e++) {
+        for (let s = 0; s < setsPerExercise; s++) {
+          const key = getSetCompleteKey(week, dayIndex, supersetIndex, e, s);
+          if (localStorage.getItem(key) !== "true") allDone = false;
+        }
+      }
+
+      localStorage.setItem(getSupersetCompleteKey(week, dayIndex, supersetIndex), allDone);
+
+      const btn = document.getElementById(`complete-btn-${dayIndex}-${supersetIndex}`);
+      if (btn) {
+        btn.textContent = allDone ? "Completed ✓" : "Mark Complete";
+        btn.classList.toggle("done", allDone);
+      }
+    }
+
+    function updateExerciseMeta(dayIndex, supersetIndex, exerciseIndex) {
+      const nameEl = document.getElementById(`day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-name`);
+      const historyEl = document.getElementById(`history-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+      const coachingEl = document.getElementById(`coaching-${dayIndex}-${supersetIndex}-${exerciseIndex}`);
+      if (!nameEl || !historyEl || !coachingEl) return;
+
+      const exerciseName = nameEl.value;
+      const history = getExerciseHistory(exerciseName);
+      const stage = getProgressStage(exerciseName);
+      const repsInput = document.getElementById(`day-${dayIndex}-ss-${supersetIndex}-ex-${exerciseIndex}-set-2-reps`);
+      const repsValue = repsInput ? repsInput.value : "";
+
+      historyEl.textContent = history
+        ? `Last workout: ${history.weight || "-"} kg, ${history.reps || "-"} reps on ${history.date}`
+        : "Last workout: none yet";
+
+      renderProgressStrip(dayIndex, supersetIndex, exerciseIndex, stage);
+      coachingEl.textContent = getCoachingPrompt(exerciseName, repsValue);
+    }
+
+    function saveDay(dayIndex) {
+      const week = getWeek();
+      const dayData = [];
+
+      for (let ss = 0; ss < supersetsPerDay; ss++) {
+        const supersetData = [];
+
+        for (let ex = 0; ex < exercisesPerSuperset; ex++) {
+          const exerciseName = document.getElementById(`day-${dayIndex}-ss-${ss}-ex-${ex}-name`).value;
+          const sets = [];
+
+          for (let st = 0; st < setsPerExercise; st++) {
+            const weight = document.getElementById(`day-${dayIndex}-ss-${ss}-ex-${ex}-set-${st}-weight`).value;
+            const reps = document.getElementById(`day-${dayIndex}-ss-${ss}-ex-${ex}-set-${st}-reps`).value;
+            sets.push({ weight, reps });
+          }
+
+          const lastSet = sets[2];
+          if (exerciseName) {
+            saveExerciseHistory(exerciseName, lastSet.weight, lastSet.reps);
+            applyProgressionResult(exerciseName, lastSet.reps);
+          }
+
+          supersetData.push({ exerciseName, sets });
+        }
+
+        dayData.push(supersetData);
+      }
+
+      localStorage.setItem(getDayStorageKey(week, dayIndex), JSON.stringify(dayData));
+
+      const savedMessage = document.getElementById(`saved-message-${dayIndex}`);
+      if (savedMessage) {
+        savedMessage.style.display = "block";
+        savedMessage.textContent = "Saved successfully";
+        setTimeout(() => {
+          savedMessage.style.display = "none";
+        }, 1800);
+      }
+
+      for (let ss = 0; ss < supersetsPerDay; ss++) {
+        updateSupersetCompleteState(dayIndex, ss);
+        for (let ex = 0; ex < exercisesPerSuperset; ex++) {
+          updateExerciseMeta(dayIndex, ss, ex);
+        }
+      }
+
+      if (dayIndex < days.length - 1) {
+        switchDay(dayIndex + 1);
+      }
+    }
+
+    function loadDay(dayIndex) {
+      const week = getWeek();
+      const saved = localStorage.getItem(getDayStorageKey(week, dayIndex));
+      if (!saved) return;
+
+      const dayData = JSON.parse(saved);
+
+      dayData.forEach((superset, ss) => {
+        superset.forEach((exercise, ex) => {
+          const nameEl = document.getElementById(`day-${dayIndex}-ss-${ss}-ex-${ex}-name`);
+          if (nameEl) nameEl.value = exercise.exerciseName || "";
+
+          if (exercise.sets) {
+            exercise.sets.forEach((setData, st) => {
+              const weightEl = document.getElementById(`day-${dayIndex}-ss-${ss}-ex-${ex}-set-${st}-weight`);
+              const repsEl = document.getElementById(`day-${dayIndex}-ss-${ss}-ex-${ex}-set-${st}-reps`);
+
+              if (weightEl) weightEl.value = setData.weight || "";
+              if (repsEl) repsEl.value = setData.reps || "";
+            });
+          }
+        });
+      });
+    }
+
+    function renderTabs() {
+      dayTabs.innerHTML = "";
+
+      days.forEach((day, index) => {
+        const btn = document.createElement("button");
+        btn.className = "tab-btn" + (index === currentDayIndex ? " active" : "");
+        btn.textContent = day;
+        btn.onclick = () => switchDay(index);
+        dayTabs.appendChild(btn);
+      });
+    }
+
+    function switchDay(dayIndex) {
+      currentDayIndex = dayIndex;
+
+      document.querySelectorAll(".day-panel").forEach((panel, index) => {
+        panel.classList.toggle("active", index === dayIndex);
+      });
+
+      document.querySelectorAll(".tab-btn").forEach((btn, index) => {
+        btn.classList.toggle("active", index === dayIndex);
+      });
+    }
+
+    function renderApp() {
+      app.innerHTML = "";
+      renderTabs();
+
+      days.forEach((dayName, dayIndex) => {
+        const panel = document.createElement("div");
+        panel.className = "day-panel" + (dayIndex === currentDayIndex ? " active" : "");
+
+        const dayCard = document.createElement("div");
+        dayCard.className = "day-card";
+
+        const dayHeader = document.createElement("div");
+        dayHeader.className = "day-header";
+        dayHeader.innerHTML = `
+          <div class="day-accent ${accents[dayIndex]}"></div>
+          <div>
+            <h2 class="day-title">${dayName}</h2>
+            <div class="day-subtitle">Manual set entry with 8 → 10 → 12 progression</div>
+          </div>
+        `;
+        dayCard.appendChild(dayHeader);
+
+        for (let ss = 0; ss < supersetsPerDay; ss++) {
+          const superset = document.createElement("div");
+          superset.className = "superset";
+
+          const supersetHeader = document.createElement("div");
+          supersetHeader.className = "superset-header";
+
+          const title = document.createElement("h3");
+          title.className = "superset-title";
+          title.textContent = `Superset ${ss + 1}`;
+
+          const completeBtn = document.createElement("button");
+          completeBtn.className = "complete-btn";
+          completeBtn.id = `complete-btn-${dayIndex}-${ss}`;
+          completeBtn.textContent = "Mark Complete";
+
+          supersetHeader.appendChild(title);
+          supersetHeader.appendChild(completeBtn);
+          superset.appendChild(supersetHeader);
+
+          const note = document.createElement("div");
+          note.className = "superset-note";
+          note.textContent = "Set structure: Set 1 = 8 reps • Set 2 = 10 reps • Set 3 = 12 reps";
+          superset.appendChild(note);
+
+          for (let ex = 0; ex < exercisesPerSuperset; ex++) {
+            const block = document.createElement("div");
+            block.className = "exercise-block";
+
+            const row = document.createElement("div");
+            row.className = "exercise-row";
+
+            const dropdown = createDropdown(dayIndex, ss, ex);
+            row.appendChild(dropdown);
+            block.appendChild(row);
+
+            const customWrap = document.createElement("div");
+            customWrap.className = "custom-wrap";
+            customWrap.id = `custom-wrap-${dayIndex}-${ss}-${ex}`;
+            block.appendChild(customWrap);
+
+            const strip = document.createElement("div");
+            strip.className = "progress-strip";
+            strip.id = `progress-strip-${dayIndex}-${ss}-${ex}`;
+            block.appendChild(strip);
+
+            for (let st = 0; st < setsPerExercise; st++) {
+              const setGrid = document.createElement("div");
+              setGrid.className = "set-grid";
+
+              const setLabel = document.createElement("div");
+              setLabel.className = "set-label";
+              setLabel.textContent = `Set ${st + 1} (${progressionTargets[st]})`;
+
+              const weightInput = createInput(
+                `day-${dayIndex}-ss-${ss}-ex-${ex}-set-${st}-weight`,
+                "Weight",
+                () => updateExerciseMeta(dayIndex, ss, ex)
+              );
+
+              const repsInput = createInput(
+                `day-${dayIndex}-ss-${ss}-ex-${ex}-set-${st}-reps`,
+                "Reps",
+                () => updateExerciseMeta(dayIndex, ss, ex)
+              );
+
+              const checkBtn = document.createElement("button");
+              checkBtn.className = "set-check";
+              checkBtn.id = `set-check-${dayIndex}-${ss}-${ex}-${st}`;
+              checkBtn.textContent = "✓";
+              checkBtn.onclick = () => toggleSetComplete(dayIndex, ss, ex, st);
+
+              setGrid.appendChild(setLabel);
+              setGrid.appendChild(weightInput);
+              setGrid.appendChild(repsInput);
+              setGrid.appendChild(checkBtn);
+
+              block.appendChild(setGrid);
+            }
+
+            const history = document.createElement("div");
+            history.className = "history";
+            history.id = `history-${dayIndex}-${ss}-${ex}`;
+            history.textContent = "Last workout: none yet";
+
+            const coaching = document.createElement("div");
+            coaching.className = "coaching";
+            coaching.id = `coaching-${dayIndex}-${ss}-${ex}`;
+            coaching.textContent = "Choose an exercise to get coaching guidance.";
+
+            block.appendChild(history);
+            block.appendChild(coaching);
+
+            superset.appendChild(block);
+          }
+
+          dayCard.appendChild(superset);
+        }
+
+        const saveBtn = document.createElement("button");
+        saveBtn.className = "save-btn";
+        saveBtn.textContent = "Save Day";
+        saveBtn.onclick = () => saveDay(dayIndex);
+        dayCard.appendChild(saveBtn);
+
+        const savedMessage = document.createElement("div");
+        savedMessage.className = "saved-message";
+        savedMessage.id = `saved-message-${dayIndex}`;
+        dayCard.appendChild(savedMessage);
+
+        panel.appendChild(dayCard);
+        app.appendChild(panel);
+      });
+
+      days.forEach((_, dayIndex) => {
+        loadDay(dayIndex);
+
+        for (let ss = 0; ss < supersetsPerDay; ss++) {
+          updateSupersetCompleteState(dayIndex, ss);
+
+          for (let ex = 0; ex < exercisesPerSuperset; ex++) {
+            for (let st = 0; st < setsPerExercise; st++) {
+              loadSetCompleteState(dayIndex, ss, ex, st);
+            }
+            updateExerciseMeta(dayIndex, ss, ex);
+          }
+        }
+      });
+
+      switchDay(currentDayIndex);
+    }
+
+    weekSelect.addEventListener("change", renderApp);
+
+    let workoutTimer;
+    let totalSeconds = 0;
+    let running = false;
+
+    function startWorkout() {
+      if (running) return;
+      running = true;
+
+      workoutTimer = setInterval(() => {
+        totalSeconds++;
+        updateWorkoutDisplay();
+      }, 1000);
+    }
+
+    function pauseWorkout() {
+      running = false;
+      clearInterval(workoutTimer);
+    }
+
+    function resetWorkout() {
+      running = false;
+      clearInterval(workoutTimer);
+      totalSeconds = 0;
+      updateWorkoutDisplay();
+    }
+
+    function updateWorkoutDisplay() {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      document.getElementById("timer").textContent =
+        `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+
+    updateWorkoutDisplay();
+    renderApp();
+  </script>
 </body>
 </html>
